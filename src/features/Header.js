@@ -50,7 +50,7 @@ function Header() {
 				>
 					<img
 						className="header--image"
-						src={require("..\\public\\images\\logo.png")}
+						src={require("../images/logo.png")}
 					/>
 					<h3 className="header--title" style={{ cursor: "pointer" }}>
 						ReactSocial
