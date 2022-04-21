@@ -1,0 +1,363 @@
+*::after,
+*::before {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	font-family: "Lato";
+	height: 100vh;
+	box-sizing: border-box;
+	/* background-image: url("./images/bg.jpg"); */
+	/* background-image: url("https://wallpaperaccess.com/full/1381849.jpg"); */
+	background-image: url("https://images.squarespace-cdn.com/content/v1/597750f4d2b857b95a7e537e/1505676181555-5BURICT3RX990F2ONS6P/Dark-Gray-Background-for-Free-Download.jpg?format=2500w");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#root {
+	height: 100vh;
+	box-sizing: border-box;
+}
+
+.spinner--container {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dash--header {
+	font-family: "Lato";
+	background: rgb(44,57,75);
+	background: linear-gradient(90deg, rgba(44,57,75,1) 0%, rgba(51,71,86,1) 60%, rgba(51,71,86,0) 100%);
+	height: 4rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem;
+}
+
+.dash--header > h3 {
+	margin: 0%;
+	color: white;
+}
+
+.header--image {
+	height: 3rem;
+	aspect-ratio: 1;
+	cursor: pointer;
+}
+
+.header--title {
+	display: none;
+	color: white;
+}
+
+.dash--search {
+	position: relative;
+	max-width: 95%;
+	left: 2.5%;
+	/* right: 5%; */
+	height: auto;
+	padding: 5px 5px;
+	margin-bottom: 1em;
+	background: rgb(255,255,255);
+	background: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(51,71,86,1) 40%, rgba(44,57,75,1) 100%);
+	color: white;
+	-webkit-box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0); 
+	box-shadow: -10px 0px 13px -7px #000000, 10px 0px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
+.searchUser--form {
+	margin-bottom: 5%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-height: 3rem;
+}
+
+.searchUser--form button {
+	margin-left: 5px;
+}
+
+
+.dash--user--searched {
+  	--bg-h: 100%;
+	background: linear-gradient(90deg, rgba(44,57,75,1), rgba(255, 255, 255, 1)) no-repeat right bottom / 0 var(--bg-h);
+  	transition: background-size 350ms;
+	padding: 5px 0;
+	margin: 10px;
+	border-radius: 5%;
+	cursor: pointer;
+} 
+
+.dash--user--searched:where(:hover, :focus-visible) {
+	--bg-h: 100%;
+	background-size: 100% var(--bg-h);
+	background-position-x: left;
+	border-radius: 5%;
+}
+
+.postMessage--container {
+	max-width: 90%;
+	margin: auto;
+	/* display: flex; */
+}
+
+.post--error--container {
+	width: 90%;
+	left: 5%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.post--container {
+	background: #2C394B !important;
+	max-width: 100%;
+	font-size: 8px !important;
+	margin-bottom: 4%;
+	width: 100%;
+}
+.post--container--header {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+.post--container--header > p {
+	display: flex;
+	align-items: center;
+	gap: 1vh;
+}
+.post--container--header > p > span {
+	font-size: 0.6em;
+	vertical-align: baseline;
+}
+
+.post--container--body {
+	margin-bottom: 0%;
+}
+
+.post--container--footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.post--container--button {
+	transform: scale(0.7);
+}
+
+.postMessage--container {
+	max-width: 95%;
+}
+
+.user--info--container {
+	border: 2px solid black;
+}
+
+.login--container {
+	width: 90%;
+}
+
+.footer {
+	width: 100%;
+	height: 2em;
+	font-size: 0.7rem !important;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 10px;
+	bottom: 0;
+	background: rgb(255,255,255);
+	background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+}
+
+@media only screen and (max-width: 600px) {
+	
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+	.header--image {
+		display: none;
+	}
+
+	.header--title {
+		display: inline;
+	}
+
+	.postMessage--container {
+		max-width: 90%;
+	}
+	
+	.dash--search {
+		position: relative;
+		max-width: 90%;
+		left: 5%;
+	}	
+
+	.post--container {
+		max-width: 90%;
+		left: 5%;
+		font-size: 8px !important;
+		margin-bottom: 4%;	
+	}
+
+	/* .login--container {
+		width: 80%;
+	}
+
+	.post--container {
+		max-width: 80%;
+		left: 10%;
+	}
+
+	.dash--styling {
+		display: flex;
+		position: absolute;
+		min-width: 50%;
+		margin-top: 1rem;
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+		left: 0%;
+		right: 0%;
+	}
+
+	.postMessage--container {
+		max-width: 80%;
+		margin: 10%;
+	} */
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+	.header--image {
+		display: inline;
+		margin-right: 1rem;
+	}
+
+	.header--title {
+		display: inline;
+	}
+	
+	.post--container {
+		max-width: 70%;
+		left: 15%;
+		font-size: 8px !important;
+		margin-bottom: 3%;	
+	}
+
+	.dash--search {
+		position: relative;
+		max-width: 70%;
+		left: 15%;
+	}	
+
+	.postMessage--container {
+		max-width: 70%;
+	}
+
+	/* .login--container {
+		width: 60%;
+	}
+
+	.post--container {
+		max-width: 70%;
+		left: 5%;
+	}
+	
+	.dash--search {
+		width: 20%;
+		right: 2.5%;
+	}
+
+	.postMessage--container {
+		max-width: 70%;
+		margin: 15%;
+	} */
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+	.post--container {
+		max-width: 50%;
+		left: 25%;
+		font-size: 8px !important;
+		margin-bottom: 2%;	
+	}
+	
+	.postMessage--container {
+		max-width: 50%;
+	}
+
+	.dash--search {
+		position: absolute;
+		width: 20%;
+		right: 2.5%;
+		left:auto;
+	}
+
+	.searchUser--form {
+		/* margin-bottom: 3%; */
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		max-height: 3rem;
+	}
+	
+	.accordion-body {
+		padding: 1rem 5px !important;
+	}
+
+	.footer {
+		color: white;
+	}
+
+	/* .login--container {
+		width: 50%;
+	}
+
+	.post--container {
+		max-width: 60%;
+		left: 20%;
+	}
+
+	.dash--search {
+		width: 15%;
+		right: 2.5%;
+	}
+
+	.postMessage--container {
+		max-width: 60%;
+		margin: auto;
+		/* display: flex; */
+	/* } */ 
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+	/* .login--container {
+		width: 30%;
+	}
+
+	.post--container {
+		max-width: 50%;
+		left: 25%;
+	}
+
+	.dash--search {
+		width: 15%;
+		right: 5%;
+	}
+	.postMessage--container {
+		max-width: 50%;
+		margin: auto;
+		/* display: flex; */
+	/* } */ 
+}
