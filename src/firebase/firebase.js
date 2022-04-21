@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
+import { getStorage } from "firebase/storage"
 
 import {
 	getAuth,
@@ -24,6 +25,7 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const user = auth.currentUser
 const db = getFirestore(app)
+const storage = getStorage(app)
 
 const logInWithEmailAndPassword = async (email, password) => {
 	return await signInWithEmailAndPassword(auth, email, password)
@@ -44,6 +46,7 @@ const logout = async () => {
 export {
 	auth,
 	db,
+	storage,
 	logInWithEmailAndPassword,
 	registerWithEmailAndPassword,
 	logout,

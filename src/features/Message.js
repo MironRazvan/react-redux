@@ -67,9 +67,7 @@ function Message(props) {
 
 	// TODO: insert comments (https://mui.com/material-ui/react-card/)
 
-	useEffect(() => {
-		// fetchHandle()
-	}, [])
+	useEffect(() => {}, [])
 
 	return (
 		<Card className="post--container" text="light">
@@ -99,6 +97,21 @@ function Message(props) {
 			<Card.Body style={{ backgroundColor: "#334756" }}>
 				<Card.Title className="post--container--body">
 					{props.array.body}
+					{props.array.image && (
+						<div
+							style={{
+								position: "relative",
+								width: "100%",
+								marginTop: props.array.body && "1rem",
+							}}
+						>
+							<img
+								className="postMessage--imgPreview"
+								style={{ width: "100%" }}
+								src={props.array.image}
+							/>
+						</div>
+					)}
 				</Card.Title>
 			</Card.Body>
 			<Card.Footer className="post--container--footer">
@@ -111,15 +124,6 @@ function Message(props) {
 					Comment
 					<AddCommentIcon sx={{ mx: 1 }} />
 				</Fab>
-				{/* <Button
-					className="post--container--button"
-					variant="contained"
-					size="small"
-					style={{ backgroundColor: "#334756", color: "#FF4C29" }}
-					endIcon={<AddCommentIcon />}
-				>
-					Comment
-				</Button> */}
 				<Fab
 					className="post--container--button"
 					variant="extended"

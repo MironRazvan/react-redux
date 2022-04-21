@@ -21,8 +21,6 @@ function Posts() {
 		// dispatch(fetchFollowedPosts(user.uid))
 	}, [posts.posts.length])
 
-	function show() {}
-
 	return (
 		<>
 			{posts.posts.length ? (

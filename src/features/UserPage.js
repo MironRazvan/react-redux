@@ -44,6 +44,7 @@ function UserPage(props) {
 			}
 			fetchUserInfo().catch((e) => console.log("Loading data"))
 			dispatch(fetchMyPosts(location.state.userID))
+			window.scrollTo(0, 0)
 		}
 		return () => {
 			ignore = true
@@ -177,7 +178,6 @@ function UserPage(props) {
 							</Card.Body>
 						</Card.Body>
 					</Card>
-					{/* <button onClick={test}>Test</button> */}
 					<Posts />
 					<Footer />
 				</>

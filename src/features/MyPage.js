@@ -33,6 +33,7 @@ function MyPage() {
 					if (!ignore) setCurrentUserInfo(info)
 				}
 				fetchUserInfo().catch((e) => console.log("Loading data"))
+				window.scrollTo(0, 0)
 			}
 		}
 
@@ -125,7 +126,7 @@ function MyPage() {
 							</Card.Body>
 						</Card.Body>
 					</Card>
-					<Accordion defaultActiveKey="0" flush>
+					<Accordion flush>
 						<Accordion.Item eventKey="0">
 							<Accordion.Header>
 								Search for users...

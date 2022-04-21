@@ -55,6 +55,7 @@ function Dash() {
 				<>
 					<Header />
 					<PostMessage />
+					{/* <button onClick={console.log(posts)}>Click me</button> */}
 					<hr
 						style={{
 							borderTop: "2px solid #F23030",

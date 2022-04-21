@@ -158,6 +158,7 @@ async function fetchMessages(ID) {
 				userID: doc.data().userID,
 				userHandle: doc.data().handle,
 				body: doc.data().body,
+				image: doc.data().image,
 				time: doc.data().time.seconds,
 				likes: doc.data().likes,
 				comments: doc.data().comments,
@@ -224,6 +225,7 @@ async function fetchMyMessages(ID) {
 			userID: doc.data().userID,
 			userHandle: doc.data().handle,
 			body: doc.data().body,
+			image: doc.data().image,
 			time: doc.data().time.seconds,
 			likes: doc.data().likes,
 			comments: doc.data().comments,
@@ -283,13 +285,14 @@ export const fetchMyPosts = createAsyncThunk("fetchMyPosts", async (userID) => {
 
 export const addNewMessage = createAsyncThunk(
 	"addNewPost",
-	async ({ userID, handle, handleLowercase, body }) => {
+	async ({ userID, handle, handleLowercase, body, image }) => {
 		return await addDoc(collection(db, "user_posts"), {
 			userID: userID,
 			handle: handle,
 			handle_lowercase: handleLowercase,
 			time: new Date(),
 			body: body,
+			image: image,
 			likes: [`${userID}`],
 			comments: [],
 		})
