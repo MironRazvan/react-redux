@@ -69,10 +69,7 @@ function SearchUser(props) {
 	return (
 		<>
 			<Accordion flush>
-				<Accordion.Item
-					style={{ backgroundColor: "#2C394B" }}
-					eventKey="0"
-				>
+				<Accordion.Item eventKey="0">
 					<Accordion.Header>Search for users...</Accordion.Header>
 					<Accordion.Body style={{ backgroundColor: "#334756" }}>
 						<Form
@@ -83,6 +80,10 @@ function SearchUser(props) {
 								type="text"
 								placeholder="Type someones @..."
 								value={userInput}
+								style={{
+									background: "var(--custom-card-body)",
+									color: "var(--custom-card-text)",
+								}}
 								onChange={(event) => handleChange(event)}
 							></Form.Control>
 							<Button variant="dark" type="submit" size="sm">
@@ -119,40 +120,6 @@ function SearchUser(props) {
 					</Accordion.Body>
 				</Accordion.Item>
 			</Accordion>
-			{/* <h5>Search for friends...</h5>
-			<Form onSubmit={fetchHandles} className="searchUser--form">
-				<Form.Control
-					type="text"
-					placeholder="Type someones @..."
-					value={userInput}
-					onChange={(event) => handleChange(event)}
-				></Form.Control>
-				<Button variant="dark" type="submit" size="sm">
-					Search
-				</Button>
-			</Form>
-			{handleList.length > 0 &&
-				handleList
-					.filter((value) => value.realName !== "")
-					.map((newUser) => (
-						<div key={nanoid()}>
-							<div
-								className="dash--user--searched"
-								key={nanoid()}
-								onClick={(event) =>
-									props.handleClick(
-										event,
-										newUser.username,
-										newUser.userID
-									)
-								}
-							>
-								{newUser.realName} (
-								<strong>@{newUser.username}</strong>)
-							</div>
-							<hr />
-						</div>
-					))} */}
 		</>
 	)
 }

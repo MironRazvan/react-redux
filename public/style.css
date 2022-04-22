@@ -58,6 +58,16 @@ body {
 	color: white;
 }
 
+.accordion-header > .accordion-button {
+	background-color: var(--custom-card-body);
+	color: var(--custom-card-text)
+}
+
+.accordion-header > .accordion-button:not(.collapsed) {
+	background-color: var(--custom-card-header);
+	color: var(--custom-card-text)
+}
+
 .dash--search {
 	position: relative;
 	max-width: 95%;
@@ -84,7 +94,6 @@ body {
 .searchUser--form button {
 	margin-left: 5px;
 }
-
 
 .dash--user--searched {
   	--bg-h: 100%;

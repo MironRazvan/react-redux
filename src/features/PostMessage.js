@@ -118,6 +118,8 @@ function PostMessage() {
 							style={{
 								display: "inline-block",
 								padding: "7px 7px",
+								background: "var(--custom-card-body)",
+								color: "var(--custom-card-text)",
 							}}
 						/>
 						<div className="input-group-append">
