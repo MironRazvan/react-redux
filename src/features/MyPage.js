@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Spinner, Card, Modal, Accordion } from "react-bootstrap"
+import { Spinner, Card, Modal, Accordion, Stack } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { useNavigate } from "react-router-dom"
 import { auth } from "../firebase/firebase"
@@ -7,12 +7,19 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
 import Footer from "./Footer"
 import Header from "./Header"
+import Posts from "./posts/Posts"
+import LocationOnIcon from "@mui/icons-material/LocationOn"
+import { useDispatch } from "react-redux"
+import { fetchMyPosts } from "./posts/postSlice"
 
 function MyPage() {
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 	const [user, loading] = useAuthState(auth)
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [show, setShow] = useState(false)
+
+	useEffect(() => {}, [])
 
 	useEffect(() => {
 		let ignore = false
@@ -30,7 +37,10 @@ function MyPage() {
 					const info = docInfo.data()
 
 					// set friend list in state
-					if (!ignore) setCurrentUserInfo(info)
+					if (!ignore) {
+						setCurrentUserInfo(info)
+						dispatch(fetchMyPosts(user.uid))
+					}
 				}
 				fetchUserInfo().catch((e) => console.log("Loading data"))
 				window.scrollTo(0, 0)
@@ -70,73 +80,36 @@ function MyPage() {
 							</div>
 						</Modal.Body>
 					</Modal>
-					<Card
-						style={{
-							maxWidth: "90%",
-							left: "5%",
-							margin: "3% 0",
-						}}
-					>
-						<Card.Body>
-							<Card.Title
-								style={{
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "space-between",
-								}}
-							>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										alignItems: "center",
-									}}
-								>
-									<h6>
-										{currentUserInfo.name}{" "}
-										<small>
-											<i>(@{currentUserInfo.handle})</i>
-										</small>
-									</h6>
-									<img
-										src="https://www.fillmurray.com/1280/720"
-										onClick={() => setShow(true)}
-										style={{
-											width: "60px",
-											height: "60px",
-											objectFit: "cover",
-											borderRadius: "50%",
-										}}
-									/>
-								</div>
+					<Card className="myinfo--container">
+						<Card.Body className="myinfo--body">
+							<Card.Title className="myinfo--title">
+								<img
+									src="https://www.fillmurray.com/1280/720"
+									onClick={() => setShow(true)}
+								/>
+								<br></br>
+								<h6>
+									{currentUserInfo.name}{" "}
+									<i>(@{currentUserInfo.handle})</i>
+								</h6>
 							</Card.Title>
-							<Card.Body
-								style={{
-									display: "flex",
-									justifyContent: "space-between",
-								}}
-							>
-								<p style={{ marginBottom: "0" }}>
-									Age: <strong>{currentUserInfo.age}</strong>
-								</p>
-								<p style={{ marginBottom: "0" }}>
-									Location:{" "}
-									<strong>{currentUserInfo.location}</strong>
-								</p>
+							<Card.Body className="myinfo--info">
+								<div className="d-flex align-items-center">
+									<p style={{ margin: "0" }}>
+										<LocationOnIcon fontSize="small" />
+										<strong>
+											{currentUserInfo.location}
+										</strong>
+									</p>
+									<div className="vr mx-3" />
+									<p style={{ margin: "0" }}>
+										<strong>{currentUserInfo.age}</strong>
+									</p>
+								</div>
 							</Card.Body>
 						</Card.Body>
 					</Card>
-					<Accordion flush>
-						<Accordion.Item eventKey="0">
-							<Accordion.Header>
-								Search for users...
-							</Accordion.Header>
-							<Accordion.Body>
-								<input></input>
-								<button>Click me</button>
-							</Accordion.Body>
-						</Accordion.Item>
-					</Accordion>
+					<Posts />
 					<Footer />
 				</>
 			)}

@@ -16,10 +16,10 @@ function Posts() {
 	const posts = useSelector(selectPosts)
 	const [user] = useAuthState(auth)
 
-	useEffect(() => {
-		// dispatch(fetchFollowedAccounts(user.uid))
-		// dispatch(fetchFollowedPosts(user.uid))
-	}, [posts.posts.length])
+	// useEffect(() => {
+	// 	// dispatch(fetchFollowedAccounts(user.uid))
+	// 	// dispatch(fetchFollowedPosts(user.uid))
+	// }, [posts.posts.length])
 
 	return (
 		<>

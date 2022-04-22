@@ -10,14 +10,14 @@ function Login() {
 	const email = useRef()
 	const password = useRef()
 	const [err, setErr] = useState("")
-	const navigator = useNavigate()
+	const navigate = useNavigate()
 	const isLoggedIn = useSelector(selectUser)
 	const [currentUser, loading] = useAuthState(auth)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		if (currentUser && !loading) {
-			navigator("/")
+			navigate("/")
 			return
 		}
 	}, [isLoggedIn])

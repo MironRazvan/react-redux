@@ -12,7 +12,6 @@ import PostMessage from "./PostMessage"
 import SearchUser from "./SearchUser"
 import { selectPosts } from "./posts/postSlice"
 import { fetchFollowedAccounts, fetchFollowedPosts } from "./posts/postSlice"
-import { Divider } from "@mui/material"
 
 function Dash() {
 	const [user, loading] = useAuthState(auth)
@@ -55,7 +54,6 @@ function Dash() {
 				<>
 					<Header />
 					<PostMessage />
-					{/* <button onClick={console.log(posts)}>Click me</button> */}
 					<hr
 						style={{
 							borderTop: "2px solid #F23030",

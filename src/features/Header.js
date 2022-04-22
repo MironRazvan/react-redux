@@ -18,7 +18,7 @@ function Header() {
 		let ignore = true
 		if (!user && loading) return
 
-		// load handle on Header load based on user id
+		// load user handle on Header load based on user id
 		const fetchHandle = async () => {
 			const docUserInfo = doc(db, `user_info/${user.uid}`)
 			const docInfo = await getDoc(docUserInfo)

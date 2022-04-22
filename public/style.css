@@ -19,6 +19,9 @@ body {
 #root {
 	height: 100vh;
 	box-sizing: border-box;
+	--custom-card-header: #2C394B;
+	--custom-card-body: #334756;
+	--custom-card-text: #fff;
 }
 
 .spinner--container {
@@ -115,7 +118,8 @@ body {
 }
 
 .post--container {
-	background: #2C394B !important;
+	/* background: #2C394B !important; */
+	background: var(--custom-card-header) !important;
 	max-width: 100%;
 	font-size: 8px !important;
 	margin-bottom: 4%;
@@ -137,6 +141,7 @@ body {
 }
 
 .post--container--body {
+	background: #334756 !important;
 	margin-bottom: 0%;
 }
 
@@ -154,8 +159,70 @@ body {
 	max-width: 95%;
 }
 
-.user--info--container {
-	border: 2px solid black;
+.myinfo--container,
+.userinfo--container {
+	max-width: 90%;
+	left: 5%;
+	right: 5%;
+	margin: 3% 0;
+}
+
+.myinfo--body {
+	background: var(--custom-card-body);
+	color: var(--custom-card-text);
+	padding: 1rem 1rem;
+}
+
+.myinfo--title,
+.userinfo--title {
+	display: flex !important;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 0% !important;
+	padding: 0 1rem;
+}
+
+.myinfo--title > img,
+.userinfo--title > img {
+	width: 60px;
+	height: 60px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+.myinfo--title > h6,
+.userinfo--title > h6 {
+	display: flex;
+	align-items: flex-start;
+}
+
+.myinfo--title >h6 > i,
+.userinfo--title > h6 > i {
+	margin-left: 0.5rem;
+}
+
+.myinfo--info {
+	height: 100%;
+	display: flex;
+	flex:none !important;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+	padding: 0 3% !important;
+}
+
+.myinfo--info > p {
+	margin: 0%;
+} 
+
+.userinfo--container {}
+
+.userinfo--title {}
+
+.userinfo--body {
+	background: var(--custom-card-body);
+	color: var(--custom-card-text)
 }
 
 .login--container {
@@ -262,6 +329,12 @@ body {
 		max-width: 70%;
 	}
 
+	.myinfo--container,
+	.userinfo--container {
+		max-width: 70%;
+		left: 15%;
+	}
+
 	/* .login--container {
 		width: 60%;
 	}
@@ -289,6 +362,12 @@ body {
 		left: 25%;
 		font-size: 8px !important;
 		margin-bottom: 2%;	
+	}
+
+	.myinfo--container,
+	.userinfo--container {
+		max-width: 50%;
+		left: 25%;
 	}
 	
 	.postMessage--container {
