@@ -1,35 +1,32 @@
-import React, { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import {
-	fetchFollowedAccounts,
-	fetchFollowedPosts,
-	selectPosts,
-} from "./postSlice"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "../../firebase/firebase"
+import React from "react"
+import { useSelector } from "react-redux"
+import { selectPosts } from "./postSlice"
 import { nanoid } from "nanoid"
 import Message from "../Message"
-import { Alert } from "bootstrap"
+import { Spinner } from "react-bootstrap"
 
-function Posts() {
-	const dispatch = useDispatch()
+function Posts(props) {
 	const posts = useSelector(selectPosts)
-	const [user] = useAuthState(auth)
-
-	// useEffect(() => {
-	// 	// dispatch(fetchFollowedAccounts(user.uid))
-	// 	// dispatch(fetchFollowedPosts(user.uid))
-	// }, [posts.posts.length])
 
 	return (
 		<>
-			{posts.posts.length ? (
+			{posts.posts.length > 0 ? (
 				posts.posts
 					.slice()
 					.sort((a, b) => parseFloat(b.time) - parseFloat(a.time))
 					.map((post) => {
-						return <Message key={nanoid()} array={post} />
+						return (
+							<Message
+								key={nanoid()}
+								useCase={props.useCase}
+								array={post}
+							/>
+						)
 					})
+			) : posts.loading ? (
+				<div className="spinner--container">
+					<Spinner animation="border" variant="info" />
+				</div>
 			) : (
 				<div
 					className="post--error--container alert alert-info"

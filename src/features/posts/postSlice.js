@@ -1,4 +1,3 @@
-import { async } from "@firebase/util"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import {
 	collection,
@@ -8,6 +7,7 @@ import {
 	query,
 	where,
 	updateDoc,
+	deleteDoc,
 	arrayUnion,
 	arrayRemove,
 	addDoc,
@@ -43,6 +43,44 @@ export const postsSlice = createSlice({
 				return {
 					...state,
 					posts: state.posts.concat(action.payload),
+				}
+			})
+			.addCase(deleteMessage.pending, (state) => {
+				return {
+					...state,
+					loading: true,
+				}
+			})
+			.addCase(deleteMessage.fulfilled, (state, action) => {
+				switch (action.payload.type) {
+					case "MESSAGE":
+						var searchKey = {
+							userID: action.payload.userID,
+							message: action.payload.message,
+						}
+						return {
+							...state,
+							posts: state.posts.filter((post) => {
+								for (var key in searchKey) {
+									if (post[key] != searchKey[key]) return true
+									return false
+								}
+							}),
+						}
+					case "IMAGE":
+						var searchKey = {
+							userID: action.payload.userID,
+							image: action.payload.image,
+						}
+						return {
+							...state,
+							posts: state.posts.filter((post) => {
+								for (var key in searchKey) {
+									if (post[key] != searchKey[key]) return true
+									return false
+								}
+							}),
+						}
 				}
 			})
 			.addCase(fetchFollowedAccounts.fulfilled, (state, action) => {
@@ -251,6 +289,39 @@ async function handleFollow(myID, userID, followState) {
 	return { userID: userID, action: "REMOVE" }
 }
 
+async function fetchPostID(userID, message, image) {
+	let q
+	image
+		? (q = query(
+				collection(db, "user_posts"),
+				where("userID", "==", `${userID}`),
+				where("image", "==", `${image}`)
+		  ))
+		: (q = query(
+				collection(db, "user_posts"),
+				where("userID", "==", `${userID}`),
+				where("body", "==", `${message}`)
+		  ))
+	const snap = await getDocs(q)
+	let id
+	snap.forEach((doc) => (id = doc.id))
+	return id
+}
+
+async function handleMessageDelete(userID, message, image) {
+	const postID = await fetchPostID(userID, message, image)
+	await deleteDoc(doc(db, "user_posts", `${postID}`))
+	if (image) {
+		return { userID: userID, image: image, type: "IMAGE" }
+	}
+	return { userID: userID, message: message, type: "MESSAGE" }
+	// let returnMessage = {}
+	// if (image) returnMessage = { userID: userID, image: image, type: "IMAGE" }
+	// if (message)
+	// 	returnMessage = { userID: userID, message: message, type: "MESSAGE" }
+	// return returnMessage
+}
+
 export const fetchFollowedAccounts = createAsyncThunk(
 	"fetchFollowedAccounts",
 	async (userID) => {
@@ -296,6 +367,21 @@ export const addNewMessage = createAsyncThunk(
 			likes: [`${userID}`],
 			comments: [],
 		})
+	}
+)
+
+export const deleteMessage = createAsyncThunk(
+	"deleteMessage",
+	async ({ userID, message, image }) => {
+		// console.log("Am primit in thunk:", userID, message, image)
+		// const postID = await fetchPostID(userID, message, image)
+		// console.log("Am obtinut idul", postID)
+		return await handleMessageDelete(userID, message, image)
+		// console.log("asd", asd)
+		// remove post with certain id from firebase
+		// remove post from array in redux state
+		// we should return postID, message and image and filter posts[]
+		// we could do some case: message => filter by id and message and case: image => filter by id and image
 	}
 )
 

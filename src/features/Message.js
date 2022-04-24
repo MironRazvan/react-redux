@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react"
-import { Card, Modal } from "react-bootstrap"
+import { Button, Card, Modal } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "../firebase/firebase"
+import { auth, db } from "../firebase/firebase"
 import { useDispatch } from "react-redux"
-import Button from "@mui/material/Button"
-import Stack from "@mui/material/Stack"
 import Fab from "@mui/material/Fab"
 import AddCommentIcon from "@mui/icons-material/AddComment"
 import FavoriteIcon from "@mui/icons-material/Favorite"
-import { addLikeToPost } from "./posts/postSlice"
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
+import { addLikeToPost, deleteMessage } from "./posts/postSlice"
 import { useNavigate } from "react-router-dom"
+import { confirmAlert } from "react-confirm-alert"
+import "react-confirm-alert/src/react-confirm-alert.css"
+import WarningIcon from "@mui/icons-material/Warning"
+import { collection, getDocs, query, where } from "firebase/firestore"
 
 function Message(props) {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const [showPicture, setShowPicture] = useState(false)
+	const [showConfirmation, setShowConfirmation] = useState(false)
 	const [user] = useAuthState(auth)
 	const DIVISIONS = [
 		{ amount: 60, name: "seconds" },
@@ -66,17 +70,27 @@ function Message(props) {
 		})
 	}
 
-	// TODO: insert comments (https://mui.com/material-ui/react-card/)
+	async function handleDeletePost() {
+		dispatch(
+			deleteMessage({
+				userID: props.array.userID,
+				message: props.array.body,
+				image: props.array.image,
+			})
+		)
+		setShowConfirmation(false)
+	}
 
-	// useEffect(() => {}, [])
+	// TODO: insert comments (https://mui.com/material-ui/react-card/)
 
 	return (
 		<>
+			{/* Modal showing full picture */}
 			<Modal
 				size="lg"
 				show={showPicture}
 				onHide={() => setShowPicture(false)}
-				aria-labelledby="example-modal-sizes-title-lg"
+				aria-labelledby="full-picture-modal"
 				centered
 			>
 				<Modal.Body>
@@ -91,6 +105,33 @@ function Message(props) {
 						/>
 					</div>
 				</Modal.Body>
+			</Modal>
+			{/* Modal showing deletion confirmation */}
+			<Modal
+				size="sm"
+				show={showConfirmation}
+				onHide={() => setShowConfirmation(false)}
+				aria-labelledby="delete-post-confirmation-modal"
+				centered
+			>
+				<Modal.Header closeButton>
+					<Modal.Title>
+						<WarningIcon color="warning" fontSize="large" />
+						Are you sure you want to delete this post?
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>Once deleted, it's gone forever :(</Modal.Body>
+				<Modal.Footer className="justify-content-evenly">
+					<Button variant="danger" onClick={handleDeletePost}>
+						Confirm
+					</Button>
+					<Button
+						variant="secondary"
+						onClick={() => setShowConfirmation(false)}
+					>
+						Cancel
+					</Button>
+				</Modal.Footer>
 			</Modal>
 			<Card className="post--container" text="light">
 				<h6
@@ -113,12 +154,22 @@ function Message(props) {
 							({formatRelativeDate(props.array.time * 1000)})
 						</span>
 					</p>
-
-					{/* </Stack> */}
 				</h6>
 				<Card.Body
 					style={{ backgroundColor: "var(--custom-card-body)" }}
 				>
+					{props.useCase === "self" && (
+						<DeleteForeverIcon
+							onClick={() => setShowConfirmation(true)}
+							style={{
+								position: "absolute",
+								right: "1%",
+								top: props.array.image ? "1%" : "3%",
+								color: "var(--custom-card-text-colored)",
+								cursor: "pointer",
+							}}
+						/>
+					)}
 					<Card.Title className="post--container--body">
 						{props.array.body}
 						{props.array.image && (

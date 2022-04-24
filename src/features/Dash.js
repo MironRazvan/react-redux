@@ -63,7 +63,7 @@ function Dash() {
 						<div className="dash--search" bg="dark">
 							<SearchUser handleClick={handleUserSearchClick} />
 						</div>
-						<Posts />
+						<Posts useCase="feed" />
 					</div>
 					<Footer />
 				</>

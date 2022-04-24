@@ -22,6 +22,7 @@ body {
 	--custom-card-header: #2C394B;
 	--custom-card-body: #334756;
 	--custom-card-text: #fff;
+	--custom-card-text-colored: #FF4C29;
 }
 
 .spinner--container {
@@ -152,6 +153,7 @@ body {
 .post--container--body {
 	background: #334756 !important;
 	margin-bottom: 0%;
+	position: relative;
 }
 
 .post--container--footer {

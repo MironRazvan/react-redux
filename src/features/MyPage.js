@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Spinner, Card, Modal, Accordion, Stack } from "react-bootstrap"
+import { Spinner, Card, Modal } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { useNavigate } from "react-router-dom"
 import { auth } from "../firebase/firebase"
@@ -9,12 +9,14 @@ import Footer from "./Footer"
 import Header from "./Header"
 import Posts from "./posts/Posts"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
-import { useDispatch } from "react-redux"
-import { fetchMyPosts } from "./posts/postSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchMyPosts, selectPosts } from "./posts/postSlice"
+import PostMessage from "./PostMessage"
 
 function MyPage() {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
+	const posts = useSelector(selectPosts)
 	const [user, loading] = useAuthState(auth)
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [show, setShow] = useState(false)
@@ -50,7 +52,7 @@ function MyPage() {
 		return () => {
 			ignore = true
 		}
-	}, [user, loading])
+	}, [user, loading, posts.posts.length])
 
 	return (
 		<>
@@ -109,7 +111,18 @@ function MyPage() {
 							</Card.Body>
 						</Card.Body>
 					</Card>
-					<Posts />
+					<hr
+						style={{
+							borderTop: "2px solid #F23030",
+						}}
+					/>
+					<PostMessage />
+					<hr
+						style={{
+							borderTop: "2px solid #F23030",
+						}}
+					/>
+					<Posts useCase="self" />
 					<Footer />
 				</>
 			)}
