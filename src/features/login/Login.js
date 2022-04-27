@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../../firebase/firebase"
 import { useNavigate } from "react-router-dom"
+import { fetchFollowedAccounts, fetchFollowedPosts } from "../posts/postSlice"
+import { fetchFollowsInfo } from "../follows/followsSlice"
+import { selectPosts } from "../posts/postSlice"
 
 function Login() {
 	const email = useRef()
@@ -14,9 +17,13 @@ function Login() {
 	const isLoggedIn = useSelector(selectUser)
 	const [currentUser, loading] = useAuthState(auth)
 	const dispatch = useDispatch()
+	const posts = useSelector(selectPosts)
 
 	useEffect(() => {
 		if (currentUser && !loading) {
+			dispatch(fetchFollowedAccounts(currentUser.uid))
+			dispatch(fetchFollowedPosts(currentUser.uid))
+			dispatch(fetchFollowsInfo(posts.follows))
 			navigate("/")
 			return
 		}

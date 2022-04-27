@@ -30,6 +30,7 @@ function PostMessage() {
 					userID: user.uid,
 					handle: userHandle,
 					handleLowercase: userHandle.toLocaleLowerCase(),
+					profileIMG: "https://www.fillmurray.com/1280/720",
 					body: userMessage.current.value,
 					image: imageURL,
 				})
@@ -144,11 +145,6 @@ function PostMessage() {
 							</label>
 						</div>
 					</div>
-					{/* <Form.Control
-						type="text"
-						placeholder="New Message"
-						ref={userMessage}
-					/> */}
 					<div className="vr" />
 					<Button type="submit" variant="secondary">
 						Post

@@ -56,7 +56,7 @@ function UserPage(props) {
 
 	return (
 		<>
-			{!user ? (
+			{!user || !currentUserInfo ? (
 				<div className="spinner--container">
 					<Spinner animation="border" variant="info" />
 				</div>
@@ -72,7 +72,7 @@ function UserPage(props) {
 						<Modal.Body>
 							<div style={{ display: "grid", height: "100%" }}>
 								<img
-									src="https://www.fillmurray.com/1280/720"
+									src={currentUserInfo.profileIMG}
 									style={{
 										maxWidth: "100%",
 										maxHeight: "100vh",
@@ -86,7 +86,7 @@ function UserPage(props) {
 						<Card.Body className="userinfo--body">
 							<Card.Title className="userinfo--title">
 								<img
-									src="https://www.fillmurray.com/1280/720"
+									src={currentUserInfo.profileIMG}
 									onClick={() => setShow(true)}
 								/>
 								<br></br>

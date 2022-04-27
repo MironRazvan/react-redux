@@ -12,24 +12,28 @@ function Header() {
 	const [user, loading] = useAuthState(auth)
 	const navigate = useNavigate()
 	const [userHandle, setUserHandle] = useState("")
+	const [userPicture, setUserPicture] = useState(null)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		let ignore = true
+		let ignore = false
 		if (!user && loading) return
 
 		// load user handle on Header load based on user id
 		const fetchHandle = async () => {
 			const docUserInfo = doc(db, `user_info/${user.uid}`)
 			const docInfo = await getDoc(docUserInfo)
-			if (ignore) setUserHandle(docInfo.data().handle)
+			if (!ignore) {
+				setUserHandle(docInfo.data().handle)
+				setUserPicture(docInfo.data().profileIMG)
+			}
 		}
 
 		fetchHandle().catch((e) =>
 			console.log("Error fetching handle for header")
 		)
 		return () => {
-			ignore = false
+			ignore = true
 		}
 	}, [])
 
@@ -57,14 +61,31 @@ function Header() {
 					</h3>
 				</div>
 				<Stack direction="horizontal" gap={3}>
-					{userHandle && (
-						<h4
-							className="mb-0"
-							onClick={handleUsernameClick}
-							style={{ cursor: "pointer", color: "#fff" }}
+					{userHandle && userPicture && (
+						<div
+							className="d-flex align-items-center"
+							style={{ gap: "0.5rem" }}
 						>
-							{userHandle}
-						</h4>
+							<img
+								src={userPicture}
+								style={{
+									width: "2rem",
+									height: "2rem",
+									objectFit: "cover",
+									borderRadius: "50%",
+									marginRight: "0.5em",
+									cursor: "pointer",
+								}}
+								onClick={handleUsernameClick}
+							/>
+							<h4
+								className="mb-0"
+								onClick={handleUsernameClick}
+								style={{ cursor: "pointer", color: "#fff" }}
+							>
+								{userHandle}
+							</h4>
+						</div>
 					)}
 					{userHandle && <div className="vr" />}
 					<Button

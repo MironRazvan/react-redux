@@ -200,6 +200,7 @@ body {
 	height: 60px;
 	object-fit: cover;
 	border-radius: 50%;
+	cursor: pointer;
 }
 
 .myinfo--title > h6,
@@ -226,10 +227,6 @@ body {
 .myinfo--info > p {
 	margin: 0%;
 } 
-
-.userinfo--container {}
-
-.userinfo--title {}
 
 .userinfo--body {
 	background: var(--custom-card-body);
@@ -425,28 +422,6 @@ body {
 
 	.postMessage--container {
 		max-width: 60%;
-		margin: auto;
-		/* display: flex; */
-	/* } */ 
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-	/* .login--container {
-		width: 30%;
-	}
-
-	.post--container {
-		max-width: 50%;
-		left: 25%;
-	}
-
-	.dash--search {
-		width: 15%;
-		right: 5%;
-	}
-	.postMessage--container {
-		max-width: 50%;
 		margin: auto;
 		/* display: flex; */
 	/* } */ 

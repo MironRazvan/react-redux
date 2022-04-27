@@ -12,6 +12,7 @@ import PostMessage from "./PostMessage"
 import SearchUser from "./SearchUser"
 import { selectPosts } from "./posts/postSlice"
 import { fetchFollowedAccounts, fetchFollowedPosts } from "./posts/postSlice"
+import { fetchFollowsInfo } from "./follows/followsSlice"
 
 function Dash() {
 	const [user, loading] = useAuthState(auth)
@@ -28,6 +29,7 @@ function Dash() {
 			} else {
 				dispatch(fetchFollowedAccounts(user.uid))
 				dispatch(fetchFollowedPosts(user.uid))
+				dispatch(fetchFollowsInfo(posts.follows))
 			}
 		}
 		return

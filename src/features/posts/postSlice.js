@@ -12,6 +12,8 @@ import {
 	arrayRemove,
 	addDoc,
 } from "firebase/firestore"
+import { deleteObject, ref } from "firebase/storage"
+import { storage } from "../../firebase/firebase"
 import { db } from "../../firebase/firebase"
 
 const initialState = {
@@ -195,6 +197,7 @@ async function fetchMessages(ID) {
 			messageList.push({
 				userID: doc.data().userID,
 				userHandle: doc.data().handle,
+				userProfileIMG: doc.data().profileIMG,
 				body: doc.data().body,
 				image: doc.data().image,
 				time: doc.data().time.seconds,
@@ -223,7 +226,6 @@ async function handleLikeClick(myID, userID, userMessage) {
 	querySnapshot.forEach((doc) => {
 		postID = doc.id
 		isLiked = doc.data().likes.includes(myID)
-		// return
 	})
 
 	// post reference
@@ -262,6 +264,7 @@ async function fetchMyMessages(ID) {
 		messageList.push({
 			userID: doc.data().userID,
 			userHandle: doc.data().handle,
+			userProfileIMG: doc.data().profileIMG,
 			body: doc.data().body,
 			image: doc.data().image,
 			time: doc.data().time.seconds,
@@ -309,17 +312,21 @@ async function fetchPostID(userID, message, image) {
 }
 
 async function handleMessageDelete(userID, message, image) {
+	// delete post from user_posts
 	const postID = await fetchPostID(userID, message, image)
-	await deleteDoc(doc(db, "user_posts", `${postID}`))
 	if (image) {
+		// if the post also has a picture, make sure to delete the picture from storage
+		// firstly, get the image url
+		// (the string is always formatted the same way so this method of splitting the string works)
+		const imageURL = image.split("%2F")[2].split("?alt=")[0]
+		// create a ref to the image
+		const imageRef = ref(storage, `users_uploads/${userID}/${imageURL}`)
+		deleteObject(imageRef)
+		await deleteDoc(doc(db, "user_posts", `${postID}`))
 		return { userID: userID, image: image, type: "IMAGE" }
 	}
+	await deleteDoc(doc(db, "user_posts", `${postID}`))
 	return { userID: userID, message: message, type: "MESSAGE" }
-	// let returnMessage = {}
-	// if (image) returnMessage = { userID: userID, image: image, type: "IMAGE" }
-	// if (message)
-	// 	returnMessage = { userID: userID, message: message, type: "MESSAGE" }
-	// return returnMessage
 }
 
 export const fetchFollowedAccounts = createAsyncThunk(
@@ -356,11 +363,12 @@ export const fetchMyPosts = createAsyncThunk("fetchMyPosts", async (userID) => {
 
 export const addNewMessage = createAsyncThunk(
 	"addNewPost",
-	async ({ userID, handle, handleLowercase, body, image }) => {
+	async ({ userID, handle, handleLowercase, profileIMG, body, image }) => {
 		return await addDoc(collection(db, "user_posts"), {
 			userID: userID,
 			handle: handle,
 			handle_lowercase: handleLowercase,
+			profileIMG: profileIMG,
 			time: new Date(),
 			body: body,
 			image: image,
@@ -373,15 +381,7 @@ export const addNewMessage = createAsyncThunk(
 export const deleteMessage = createAsyncThunk(
 	"deleteMessage",
 	async ({ userID, message, image }) => {
-		// console.log("Am primit in thunk:", userID, message, image)
-		// const postID = await fetchPostID(userID, message, image)
-		// console.log("Am obtinut idul", postID)
 		return await handleMessageDelete(userID, message, image)
-		// console.log("asd", asd)
-		// remove post with certain id from firebase
-		// remove post from array in redux state
-		// we should return postID, message and image and filter posts[]
-		// we could do some case: message => filter by id and message and case: image => filter by id and image
 	}
 )
 

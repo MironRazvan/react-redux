@@ -5,10 +5,12 @@ import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 import { createStore } from "@reduxjs/toolkit"
 import postsReducer from "../features/posts/postSlice"
+import followsReducer from "../features/follows/followsSlice"
 
 const rootReducer = combineReducers({
 	user: userReducer,
 	posts: postsReducer,
+	follows: followsReducer,
 })
 
 const persistConfig = {
