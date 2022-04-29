@@ -168,16 +168,15 @@ function MyPage() {
 		return () => {
 			ignore = true
 		}
-	}, [user])
+	}, [user, posts.posts.length])
 
 	useEffect(() => {
 		let ignore = false
 		if (user) {
 			if (!currentUserInfo || !currentProfilePicture) {
-				!ignore && dispatch(fetchMyPosts(user.uid))
+				dispatch(fetchMyPosts(user.uid))
 				const myInfo = follows.friendInfo.forEach((friend) => {
 					if (friend.userID === user.uid) {
-						console.log(friend)
 						setCurrentUserInfo(friend)
 						setCurrentProfilePicture(friend.profileIMG)
 					}
