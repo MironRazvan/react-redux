@@ -63,7 +63,6 @@ async function fetchInfo(userList) {
 		// console.log(userList[user])
 		const docUserInfo = doc(db, `user_info/${userList[user]}`)
 		const docInfo = await getDoc(docUserInfo)
-		// console.log(docInfo.data())
 		tempList.push(docInfo.data())
 	}
 	return tempList

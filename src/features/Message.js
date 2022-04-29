@@ -38,13 +38,18 @@ function Message(props) {
 
 	useEffect(() => {
 		let ignore = false
-		if (!follows.loading) {
+		if (!follows.loading && follows.friendInfo) {
 			if (!ignore) {
-				setCurrentPicture(
-					follows.friendInfo.find(
-						(friend) => friend.userID === props.array.userID
-					).profileIMG
+				// console.log(follows.friendInfo)
+				const userPicture = follows.friendInfo.find(
+					(friend) => friend.userID === props.array.userID
 				)
+				follows.friendInfo.forEach((friend) => {
+					if (friend.userID === props.array.userID) {
+						setCurrentPicture(userPicture.profileIMG)
+					}
+				})
+				// console.log(userPicture)
 			}
 		}
 		return () => {

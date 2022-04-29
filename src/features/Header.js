@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react"
 import { Button, Stack } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../firebase/firebase"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { signout } from "./login/loginSlice"
 import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
 import { useNavigate } from "react-router-dom"
+import { selectFollows } from "../features/follows/followsSlice"
 
 function Header() {
 	const [user, loading] = useAuthState(auth)
@@ -14,6 +15,7 @@ function Header() {
 	const [userHandle, setUserHandle] = useState("")
 	const [userPicture, setUserPicture] = useState(null)
 	const dispatch = useDispatch()
+	const follows = useSelector(selectFollows)
 
 	useEffect(() => {
 		let ignore = false
@@ -25,7 +27,10 @@ function Header() {
 			const docInfo = await getDoc(docUserInfo)
 			if (!ignore) {
 				setUserHandle(docInfo.data().handle)
-				setUserPicture(docInfo.data().profileIMG)
+				const myProfilePicture = follows.friendInfo.find(
+					(friend) => friend.userID === user.uid
+				)
+				setUserPicture(myProfilePicture.profileIMG)
 			}
 		}
 
@@ -35,7 +40,7 @@ function Header() {
 		return () => {
 			ignore = true
 		}
-	}, [])
+	}, [user, loading, follows])
 
 	function handleUsernameClick() {
 		navigate("/mypage")

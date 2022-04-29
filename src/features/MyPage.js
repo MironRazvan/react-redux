@@ -175,7 +175,10 @@ function MyPage() {
 						dispatch(fetchMyPosts(user.uid))
 					}
 					setCurrentUserInfo(info)
-					setCurrentProfilePicture(currentUserInfo.profileIMG)
+					const myProfilePicture = follows.friendInfo.find(
+						(friend) => friend.userID === user.uid
+					)
+					setCurrentProfilePicture(myProfilePicture.profileIMG)
 				}
 				fetchUserInfo().catch((e) => console.log("Loading data"))
 				window.scrollTo(0, 0)
