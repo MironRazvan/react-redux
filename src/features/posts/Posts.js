@@ -7,7 +7,6 @@ import { Spinner } from "react-bootstrap"
 
 function Posts(props) {
 	const posts = useSelector(selectPosts)
-
 	return (
 		<>
 			{posts.posts.length > 0 ? (

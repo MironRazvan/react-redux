@@ -38,24 +38,21 @@ function Message(props) {
 
 	useEffect(() => {
 		let ignore = false
+
 		if (!follows.loading && follows.friendInfo) {
-			if (!ignore) {
-				// console.log(follows.friendInfo)
-				const userPicture = follows.friendInfo.find(
-					(friend) => friend.userID === props.array.userID
-				)
+			if (!ignore && !currentPicture) {
 				follows.friendInfo.forEach((friend) => {
 					if (friend.userID === props.array.userID) {
-						setCurrentPicture(userPicture.profileIMG)
+						setCurrentPicture(friend.profileIMG)
 					}
 				})
-				// console.log(userPicture)
 			}
 		}
+
 		return () => {
 			ignore = true
 		}
-	}, [follows.friendInfo])
+	}, [])
 
 	function formatRelativeDate(toDate, fromDate = new Date()) {
 		let duration = (toDate - fromDate) / 1000

@@ -33,7 +33,7 @@ function Dash() {
 			}
 		}
 		return
-	}, [user, posts.posts.length])
+	}, [user])
 
 	function handleUserSearchClick(event, username, userID) {
 		event.preventDefault()

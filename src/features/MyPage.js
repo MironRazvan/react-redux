@@ -163,32 +163,34 @@ function MyPage() {
 			if (!user) {
 				navigate("/login")
 				return
-			} else {
-				async function fetchUserInfo() {
-					// gets current user info
-					const docUserInfo = doc(db, `user_info/${user.uid}`)
-					const docInfo = await getDoc(docUserInfo)
-					const info = docInfo.data()
-
-					// fetch user posts
-					if (!ignore) {
-						dispatch(fetchMyPosts(user.uid))
-					}
-					setCurrentUserInfo(info)
-					const myProfilePicture = follows.friendInfo.find(
-						(friend) => friend.userID === user.uid
-					)
-					setCurrentProfilePicture(myProfilePicture.profileIMG)
-				}
-				fetchUserInfo().catch((e) => console.log("Loading data"))
-				window.scrollTo(0, 0)
 			}
 		}
+		return () => {
+			ignore = true
+		}
+	}, [user])
+
+	useEffect(() => {
+		let ignore = false
+		if (user) {
+			if (!currentUserInfo || !currentProfilePicture) {
+				!ignore && dispatch(fetchMyPosts(user.uid))
+				const myInfo = follows.friendInfo.forEach((friend) => {
+					if (friend.userID === user.uid) {
+						console.log(friend)
+						setCurrentUserInfo(friend)
+						setCurrentProfilePicture(friend.profileIMG)
+					}
+				})
+			}
+		}
+
+		window.scrollTo(0, 0)
 
 		return () => {
 			ignore = true
 		}
-	}, [user, loading, posts.posts.length, follows])
+	}, [user, follows.friendInfo, posts.posts.length])
 
 	return (
 		<>
@@ -241,7 +243,7 @@ function MyPage() {
 										}}
 									>
 										<img
-											src={currentProfilePicture}
+											src={currentUserInfo.profileIMG}
 											style={{
 												width: "7rem",
 												height: "7rem",
