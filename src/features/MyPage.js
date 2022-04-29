@@ -166,7 +166,6 @@ function MyPage() {
 				const userInfo = follows.friendInfo.find(
 					(friend) => friend.userID === user.uid
 				)
-				console.log("ignore", ignore)
 				dispatch(fetchMyPosts(userInfo.userID))
 				setCurrentUserInfo(userInfo)
 				setCurrentProfilePicture(userInfo.profileIMG)

@@ -52,8 +52,6 @@ function UserPage(props) {
 		}
 	}, [posts.posts.length, posts.follows, user])
 
-	// TODO: fix firestore database (some users info is fucked up as in ID doesn't match)
-
 	return (
 		<>
 			{!user || !currentUserInfo ? (

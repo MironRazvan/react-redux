@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { getDoc, doc } from "firebase/firestore"
 import { Button, Card, Modal } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth, db } from "../firebase/firebase"
@@ -39,13 +40,26 @@ function Message(props) {
 	useEffect(() => {
 		let ignore = false
 
+		const fetchProfileIMG = async (id) => {
+			const docUserInfo = doc(db, `user_info/${id}`)
+			const docInfo = await getDoc(docUserInfo)
+			return docInfo.data().profileIMG
+		}
+
 		if (!follows.loading && follows.friendInfo) {
 			if (!ignore && !currentPicture) {
+				// firstly, search the friend in follows state and retreive data if present
 				follows.friendInfo.forEach((friend) => {
 					if (friend.userID === props.array.userID) {
 						setCurrentPicture(friend.profileIMG)
 					}
 				})
+				// if no picture found -> no friend -> search in firebase
+				if (!currentPicture) {
+					fetchProfileIMG(props.array.userID).then((res) =>
+						setCurrentPicture(res)
+					)
+				}
 			}
 		}
 

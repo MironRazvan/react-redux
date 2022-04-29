@@ -30,7 +30,6 @@ function PostMessage() {
 					userID: user.uid,
 					handle: userHandle,
 					handleLowercase: userHandle.toLocaleLowerCase(),
-					profileIMG: "https://www.fillmurray.com/1280/720",
 					body: userMessage.current.value,
 					image: imageURL,
 				})
