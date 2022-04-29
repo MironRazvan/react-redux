@@ -45,7 +45,6 @@ function MyPage() {
 	const posts = useSelector(selectPosts)
 	const follows = useSelector(selectFollows)
 	const [user, loading] = useAuthState(auth)
-	const [ignore, setIgnore] = useState(false)
 	const [currentProfilePicture, setCurrentProfilePicture] = useState("")
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [showPictureModal, setShowPictureModal] = useState(false)
@@ -156,9 +155,9 @@ function MyPage() {
 		})
 		return customURL
 	}
-
-	// let ignore = false
 	useEffect(() => {
+		let ignore = false
+
 		if (!loading) {
 			if (!user) {
 				navigate("/login")
@@ -169,14 +168,14 @@ function MyPage() {
 				)
 				console.log("ignore", ignore)
 				dispatch(fetchMyPosts(userInfo.userID))
-				ignore && setCurrentUserInfo(userInfo)
+				setCurrentUserInfo(userInfo)
 				setCurrentProfilePicture(userInfo.profileIMG)
 				window.scrollTo(0, 0)
 			}
 		}
 
 		return () => {
-			setIgnore(true)
+			ignore = true
 		}
 	}, [user, loading, posts.posts.length, follows])
 
