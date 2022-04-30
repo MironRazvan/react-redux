@@ -215,6 +215,7 @@ body {
 .userinfo--title > h6 {
 	display: flex;
 	align-items: flex-start;
+	color: white;
 }
 
 .myinfo--title >h6 > i,
@@ -222,7 +223,8 @@ body {
 	margin-left: 0.5rem;
 }
 
-.myinfo--info {
+.myinfo--info,
+.userinfo--info {
 	height: 100%;
 	display: flex;
 	flex:none !important;
@@ -230,6 +232,7 @@ body {
 	align-items: center;
 	justify-content: space-evenly;
 	padding: 0 3% !important;
+	color: white;
 }
 
 .myinfo--info > p {
