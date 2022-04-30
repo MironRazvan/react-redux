@@ -155,7 +155,11 @@ function PostMessage() {
 						</div>
 					</div>
 					<div className="vr" />
-					<Button type="submit" variant="secondary">
+					<Button
+						type="submit"
+						variant="outline-secondary"
+						style={{ color: "#FF4C29" }}
+					>
 						Post
 					</Button>
 				</Stack>

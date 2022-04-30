@@ -92,6 +92,7 @@ function Header() {
 									borderRadius: "50%",
 									marginRight: "0.5em",
 									cursor: "pointer",
+									boxShadow: "0px 0px 0px 1px white",
 								}}
 								onClick={handleUsernameClick}
 							/>

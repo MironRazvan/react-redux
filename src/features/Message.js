@@ -214,6 +214,7 @@ function Message(props) {
 								borderRadius: "50%",
 								marginRight: "0.5em",
 								cursor: "pointer",
+								boxShadow: "0px 0px 0px 1px white",
 							}}
 						></img>
 						<p className="mb-0" style={{ cursor: "pointer" }}>
@@ -273,7 +274,8 @@ function Message(props) {
 								size="small"
 								color="neutral"
 								sx={{
-									backgroundColor: "#334756",
+									backgroundColor:
+										"var(--custom-card-header)",
 									color: "#FF4C29",
 									borderRadius: "2rem",
 									textTransform: "capitalize",
@@ -298,7 +300,8 @@ function Message(props) {
 												margin: "0 0.5rem",
 										  }
 										: {
-												backgroundColor: "#334756",
+												backgroundColor:
+													"var(--custom-card-header)",
 												color: "#FF4C29",
 												borderRadius: "2rem",
 												margin: "0 0.5rem",

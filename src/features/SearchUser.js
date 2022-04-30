@@ -74,6 +74,7 @@ function SearchUser(props) {
 					<Accordion.Body
 						style={{
 							backgroundColor: "var(--custom-card-body)",
+							color: "var(--custom-card-text-colored)",
 						}}
 					>
 						<Form
@@ -86,11 +87,16 @@ function SearchUser(props) {
 								value={userInput}
 								style={{
 									background: "var(--custom-card-header)",
-									color: "var(--custom-card-text)",
+									color: "var(--custom-card-text-colored)",
 								}}
 								onChange={(event) => handleChange(event)}
 							></Form.Control>
-							<Button variant="dark" type="submit" size="sm">
+							<Button
+								variant="dark"
+								type="submit"
+								size="sm"
+								style={{ color: "#FF4C29" }}
+							>
 								Search
 							</Button>
 						</Form>
