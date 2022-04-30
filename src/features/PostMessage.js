@@ -129,6 +129,7 @@ function PostMessage() {
 								display: "inline-block",
 								padding: "7px 7px",
 								background: "var(--custom-card-header)",
+								color: "var(--custom-card-text-colored)",
 							}}
 						/>
 						<div className="input-group-append">
