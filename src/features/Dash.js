@@ -34,7 +34,7 @@ function Dash() {
 		if (user) {
 			dispatch(fetchFollowedPosts(user.uid))
 		}
-	}, [posts.posts.length])
+	}, [posts.posts.length, user])
 
 	function handleUserSearchClick(event, username, userID) {
 		event.preventDefault()

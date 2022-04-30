@@ -20,6 +20,7 @@ body {
 	/* height: 100vh; */
 	box-sizing: border-box;
 	background-color: #082032;
+	min-height: 100vh;
 	--custom-card-header: #2C394B;
 	--custom-card-body: #334756;
 	--custom-card-text: #FF4C29;
