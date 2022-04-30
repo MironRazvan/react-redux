@@ -47,7 +47,6 @@ export const followsSlice = createSlice({
 				}
 			})
 			.addCase(fetchFollowsInfo.fulfilled, (state, action) => {
-				// console.log(action.payload)
 				return {
 					...state,
 					friendInfo: action.payload,
@@ -71,7 +70,6 @@ async function fetchInfo(userList) {
 export const fetchFollowsInfo = createAsyncThunk(
 	"fetchFollowsInfo",
 	async (userList) => {
-		// console.log("am primit in fetchFollowsInfo", userList)
 		return await fetchInfo(userList)
 	}
 )

@@ -8,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore"
 import { db } from "../firebase/firebase"
 import { useNavigate } from "react-router-dom"
 import { selectFollows } from "../features/follows/followsSlice"
+import { fetchMyPosts } from "./posts/postSlice"
 
 function Header() {
 	const [user, loading] = useAuthState(auth)
@@ -20,29 +21,40 @@ function Header() {
 	useEffect(() => {
 		let ignore = false
 		if (!user && loading) return
+		// console.log(follows)
+		follows.friendInfo.forEach((friend) => {
+			if (friend.userID === user.uid) {
+				setUserHandle(friend.handle)
+				setUserPicture(friend.profileIMG)
+			}
+		})
 
 		// load user handle on Header load based on user id
-		const fetchHandle = async () => {
-			const docUserInfo = doc(db, `user_info/${user.uid}`)
-			const docInfo = await getDoc(docUserInfo)
-			if (!ignore) {
-				setUserHandle(docInfo.data().handle)
-				const myProfilePicture = follows.friendInfo.find(
-					(friend) => friend.userID === user.uid
-				)
-				setUserPicture(myProfilePicture.profileIMG)
-			}
-		}
+		// const fetchHandle = async () => {
+		// 	const docUserInfo = doc(db, `user_info/${user.uid}`)
+		// 	const docInfo = await getDoc(docUserInfo)
+		// 	if (!ignore) {
+		// 		setUserHandle(docInfo.data().handle)
+		// const myProfilePicture = follows.friendInfo.find(
+		// 	(friend) => friend.userID === user.uid
+		// )
+		// setUserPicture(myProfilePicture.profileIMG)
+		// 		setUserPicture(docInfo.data().profileIMG)
+		// 	}
+		// }
 
-		fetchHandle().catch((e) =>
-			console.log("Error fetching handle for header")
-		)
+		// if (!loading) {
+		// 	fetchHandle().catch((e) =>
+		// 		console.log("Error fetching handle for header")
+		// 	)
+		// }
 		return () => {
 			ignore = true
 		}
 	}, [user, loading, follows])
 
 	function handleUsernameClick() {
+		dispatch(fetchMyPosts(user.uid))
 		navigate("/mypage")
 	}
 

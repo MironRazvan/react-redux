@@ -15,6 +15,7 @@ import { Fab } from "@mui/material"
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1"
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
+import { fetchFollowsInfo } from "./follows/followsSlice"
 
 function UserPage(props) {
 	const navigate = useNavigate()
@@ -51,6 +52,17 @@ function UserPage(props) {
 			ignore = true
 		}
 	}, [posts.posts.length, posts.follows, user])
+
+	function handleFollow() {
+		dispatch(
+			handleFollowState({
+				myID: user.uid,
+				userID: location.state.userID,
+				followState: posts.follows.includes(location.state.userID),
+			})
+		).then()
+		dispatch(fetchFollowsInfo(posts.follows))
+	}
 
 	return (
 		<>
@@ -101,17 +113,28 @@ function UserPage(props) {
 									flexDirection: "column",
 								}}
 							>
-								<div className="d-flex align-items-center mb-3">
-									<p style={{ marginBottom: "0" }}>
-										<LocationOnIcon fontSize="small" />
-										<strong>
-											{currentUserInfo.location}
-										</strong>
-									</p>
-									<div className="vr mx-3" />
-									<p style={{ marginBottom: "0" }}>
-										<strong>{currentUserInfo.age}</strong>
-									</p>
+								<div className="d-flex flex-column align-items-center">
+									<div className="d-flex align-items-center">
+										<p style={{ margin: "0" }}>
+											<LocationOnIcon fontSize="small" />
+											<strong>
+												{currentUserInfo.location}
+											</strong>
+										</p>
+										<div className="vr mx-3" />
+										<p style={{ margin: "0" }}>
+											<strong>
+												{currentUserInfo.age}
+											</strong>
+										</p>
+									</div>
+									{currentUserInfo.about && (
+										<div>
+											<p className="mb-3 mt-2">
+												{currentUserInfo.about}
+											</p>
+										</div>
+									)}
 								</div>
 
 								<Fab
@@ -129,18 +152,7 @@ function UserPage(props) {
 										padding: "0 0.5em",
 										width: "100%",
 									}}
-									onClick={() =>
-										dispatch(
-											handleFollowState({
-												myID: user.uid,
-												userID: location.state.userID,
-												followState:
-													posts.follows.includes(
-														location.state.userID
-													),
-											})
-										)
-									}
+									onClick={() => handleFollow()}
 								>
 									{!posts.follows.includes(
 										location.state.userID

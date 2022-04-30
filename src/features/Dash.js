@@ -26,14 +26,15 @@ function Dash() {
 			if (!user || !isLoggedIn.isSet) {
 				navigate("/login")
 				return
-			} else {
-				dispatch(fetchFollowedAccounts(user.uid))
-				dispatch(fetchFollowedPosts(user.uid))
-				dispatch(fetchFollowsInfo(posts.follows))
 			}
 		}
-		return
-	}, [user, posts.posts.length])
+	}, [user])
+
+	useEffect(() => {
+		if (user) {
+			dispatch(fetchFollowedPosts(user.uid))
+		}
+	}, [posts.posts.length])
 
 	function handleUserSearchClick(event, username, userID) {
 		event.preventDefault()

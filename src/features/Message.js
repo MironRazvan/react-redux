@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { getDoc, doc } from "firebase/firestore"
-import { Button, Card, Modal } from "react-bootstrap"
+import { Card, Modal } from "react-bootstrap"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth, db } from "../firebase/firebase"
 import { useDispatch, useSelector } from "react-redux"
-import Fab from "@mui/material/Fab"
 import AddCommentIcon from "@mui/icons-material/AddComment"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
-import { addLikeToPost, deleteMessage } from "./posts/postSlice"
+import { addLikeToPost, deleteMessage, fetchMyPosts } from "./posts/postSlice"
 import { useNavigate } from "react-router-dom"
 import "react-confirm-alert/src/react-confirm-alert.css"
 import WarningIcon from "@mui/icons-material/Warning"
 import { selectFollows } from "./follows/followsSlice"
+import { Button } from "@mui/material"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
 
 function Message(props) {
 	const dispatch = useDispatch()
@@ -22,6 +23,15 @@ function Message(props) {
 	const [currentPicture, setCurrentPicture] = useState("")
 	const [user] = useAuthState(auth)
 	const follows = useSelector(selectFollows)
+
+	const buttonTheme = createTheme({
+		palette: {
+			neutral: {
+				main: "#64748B",
+				contrastText: "#fff",
+			},
+		},
+	})
 
 	const DIVISIONS = [
 		{ amount: 60, name: "seconds" },
@@ -40,11 +50,15 @@ function Message(props) {
 	useEffect(() => {
 		let ignore = false
 
+		if (!user) return
+
 		const fetchProfileIMG = async (id) => {
 			const docUserInfo = doc(db, `user_info/${id}`)
 			const docInfo = await getDoc(docUserInfo)
 			return docInfo.data().profileIMG
 		}
+
+		// console.log(props.array)
 
 		if (!follows.loading && follows.friendInfo) {
 			if (!ignore && !currentPicture) {
@@ -52,14 +66,12 @@ function Message(props) {
 				follows.friendInfo.forEach((friend) => {
 					if (friend.userID === props.array.userID) {
 						setCurrentPicture(friend.profileIMG)
+						return
 					}
 				})
-				// if no picture found -> no friend -> search in firebase
-				if (!currentPicture) {
-					fetchProfileIMG(props.array.userID).then((res) =>
-						setCurrentPicture(res)
-					)
-				}
+				fetchProfileIMG(props.array.userID)
+					.then((res) => setCurrentPicture(res))
+					.catch((e) => console.log("Loading data..."))
 			}
 		}
 
@@ -95,6 +107,7 @@ function Message(props) {
 
 	function handleUsernameClick(event, username, userID) {
 		event.preventDefault()
+		dispatch(fetchMyPosts(userID))
 		if (userID === user.uid) {
 			navigate("/mypage")
 			return
@@ -156,17 +169,25 @@ function Message(props) {
 				</Modal.Header>
 				<Modal.Body>Once deleted, it's gone forever :(</Modal.Body>
 				<Modal.Footer className="justify-content-evenly">
-					<Button variant="danger" onClick={handleDeletePost}>
+					<Button
+						variant="contained"
+						size="small"
+						style={{ background: "red", color: "white" }}
+						onClick={handleDeletePost}
+					>
 						Confirm
 					</Button>
 					<Button
-						variant="secondary"
+						variant="contained"
+						size="small"
+						style={{ background: "#f2f2f2", color: "black" }}
 						onClick={() => setShowConfirmation(false)}
 					>
 						Cancel
 					</Button>
 				</Modal.Footer>
 			</Modal>
+
 			{follows && (
 				<Card className="post--container" text="light">
 					<h6
@@ -180,19 +201,21 @@ function Message(props) {
 							)
 						}
 					>
-						{!follows.loading && (
-							<img
-								src={currentPicture}
-								style={{
-									width: "2rem",
-									height: "2rem",
-									objectFit: "cover",
-									borderRadius: "50%",
-									marginRight: "0.5em",
-									cursor: "pointer",
-								}}
-							></img>
-						)}
+						<img
+							src={
+								currentPicture
+									? currentPicture
+									: "https://www.fillmurray.com/g/300/200"
+							}
+							style={{
+								width: "2rem",
+								height: "2rem",
+								objectFit: "cover",
+								borderRadius: "50%",
+								marginRight: "0.5em",
+								cursor: "pointer",
+							}}
+						></img>
 						<p className="mb-0" style={{ cursor: "pointer" }}>
 							{props.array.userHandle}
 							<span className="text-muted">
@@ -243,40 +266,50 @@ function Message(props) {
 						</Card.Title>
 					</Card.Body>
 					<Card.Footer className="post--container--footer">
-						<Fab
-							className="post--container--button"
-							variant="extended"
-							size="small"
-							style={{
-								backgroundColor: "#334756",
-								color: "#FF4C29",
-							}}
-						>
-							Comment
-							<AddCommentIcon sx={{ mx: 1 }} />
-						</Fab>
-						<Fab
-							className="post--container--button"
-							variant="extended"
-							size="small"
-							style={
-								props.array.likes &&
-								props.array.likes.includes(user.uid)
-									? {
-											backgroundColor: "#F23030",
-											color: "#334756",
-									  }
-									: {
-											backgroundColor: "#334756",
-											color: "#FF4C29",
-									  }
-							}
-							// style={{ backgroundColor: "#F23030", color: "#334756" }}
-							onClick={handleLike}
-						>
-							<FavoriteIcon sx={{ mr: 1 }} />
-							{Object(props.array.likes).length}
-						</Fab>
+						<ThemeProvider theme={buttonTheme}>
+							<Button
+								className="post--container--button"
+								variant="contained"
+								size="small"
+								color="neutral"
+								sx={{
+									backgroundColor: "#334756",
+									color: "#FF4C29",
+									borderRadius: "2rem",
+									textTransform: "capitalize",
+									margin: "0 0.5rem",
+								}}
+								endIcon={<AddCommentIcon />}
+							>
+								Comment
+							</Button>
+							<Button
+								className="post--container--button"
+								variant="contained"
+								color="neutral"
+								size="small"
+								sx={
+									props.array.likes &&
+									props.array.likes.includes(user.uid)
+										? {
+												backgroundColor: "#F23030",
+												color: "#334756",
+												borderRadius: "2rem",
+												margin: "0 0.5rem",
+										  }
+										: {
+												backgroundColor: "#334756",
+												color: "#FF4C29",
+												borderRadius: "2rem",
+												margin: "0 0.5rem",
+										  }
+								}
+								startIcon={<FavoriteIcon />}
+								onClick={handleLike}
+							>
+								{Object(props.array.likes).length}
+							</Button>
+						</ThemeProvider>
 					</Card.Footer>
 				</Card>
 			)}

@@ -71,7 +71,11 @@ function SearchUser(props) {
 			<Accordion flush>
 				<Accordion.Item eventKey="0">
 					<Accordion.Header>Search for users...</Accordion.Header>
-					<Accordion.Body style={{ backgroundColor: "#334756" }}>
+					<Accordion.Body
+						style={{
+							backgroundColor: "var(--custom-card-body)",
+						}}
+					>
 						<Form
 							style={{ display: "flex" }}
 							onSubmit={fetchHandles}
@@ -81,7 +85,7 @@ function SearchUser(props) {
 								placeholder="Type someones @..."
 								value={userInput}
 								style={{
-									background: "var(--custom-card-body)",
+									background: "var(--custom-card-header)",
 									color: "var(--custom-card-text)",
 								}}
 								onChange={(event) => handleChange(event)}

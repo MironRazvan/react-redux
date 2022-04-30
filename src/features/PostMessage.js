@@ -9,9 +9,12 @@ import { useDispatch } from "react-redux"
 import { addNewMessage } from "./posts/postSlice"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
 import CancelIcon from "@mui/icons-material/Cancel"
+import { useSelector } from "react-redux"
+import { selectFollows } from "./follows/followsSlice"
 
 function PostMessage() {
 	const userMessage = useRef()
+	const follows = useSelector(selectFollows)
 	const [userImage, setUserImage] = useState(null)
 	const [localUserImageURL, setLocalUserImageURL] = useState("")
 	const dispatch = useDispatch()
@@ -25,11 +28,18 @@ function PostMessage() {
 			imageURL = await fetchImageURLFromFirebase()
 		}
 		if (imageURL != "" || userMessage.current.value != "") {
+			let myProfileIMG
+			follows.friendInfo.forEach((friend) => {
+				if (friend.userID === user.uid) {
+					myProfileIMG = friend.profileIMG
+				}
+			})
 			dispatch(
 				addNewMessage({
 					userID: user.uid,
 					handle: userHandle,
 					handleLowercase: userHandle.toLocaleLowerCase(),
+					// profileIMG: myProfileIMG,
 					body: userMessage.current.value,
 					image: imageURL,
 				})
@@ -118,8 +128,7 @@ function PostMessage() {
 							style={{
 								display: "inline-block",
 								padding: "7px 7px",
-								background: "var(--custom-card-body)",
-								color: "var(--custom-card-text)",
+								background: "var(--custom-card-header)",
 							}}
 						/>
 						<div className="input-group-append">

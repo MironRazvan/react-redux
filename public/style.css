@@ -10,19 +10,24 @@ body {
 	box-sizing: border-box;
 	/* background-image: url("./images/bg.jpg"); */
 	/* background-image: url("https://wallpaperaccess.com/full/1381849.jpg"); */
-	background-image: url("https://images.squarespace-cdn.com/content/v1/597750f4d2b857b95a7e537e/1505676181555-5BURICT3RX990F2ONS6P/Dark-Gray-Background-for-Free-Download.jpg?format=2500w");
+	/* background-image: url("https://images.squarespace-cdn.com/content/v1/597750f4d2b857b95a7e537e/1505676181555-5BURICT3RX990F2ONS6P/Dark-Gray-Background-for-Free-Download.jpg?format=2500w");
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-attachment: fixed;
+	background-attachment: fixed; */
 }
 
 #root {
-	height: 100vh;
+	/* height: 100vh; */
 	box-sizing: border-box;
+	background-color: #082032;
 	--custom-card-header: #2C394B;
 	--custom-card-body: #334756;
-	--custom-card-text: #fff;
+	--custom-card-text: #FF4C29;
 	--custom-card-text-colored: #FF4C29;
+	/* --custom-card-header: #2C394B;
+	--custom-card-body: #334756;
+	--custom-card-text: #fff;
+	--custom-card-text-colored: #FF4C29; */
 }
 
 .spinner--container {
@@ -116,7 +121,6 @@ body {
 .postMessage--container {
 	max-width: 90%;
 	margin: auto;
-	/* display: flex; */
 }
 
 .post--error--container {
@@ -130,6 +134,8 @@ body {
 .post--container {
 	/* background: #2C394B !important; */
 	background: var(--custom-card-header) !important;
+	-webkit-box-shadow: 0px 0px 0px 1px #FFFFFF; 
+	box-shadow: 0px 0px 0px 1px #FFFFFF;
 	max-width: 100%;
 	font-size: 8px !important;
 	margin-bottom: 4%;
@@ -151,19 +157,21 @@ body {
 }
 
 .post--container--body {
-	background: #334756 !important;
+	background: var(--custom-card-body) !important;
+	/* background: #334756 !important; */
 	margin-bottom: 0%;
 	position: relative;
 }
 
 .post--container--footer {
+	background-color: var(--custom-card-body) !important;
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
 }
 
 .post--container--button {
-	transform: scale(0.7);
+	transform: scale(0.8);
 }
 
 .postMessage--container {
@@ -282,6 +290,10 @@ body {
 		margin-bottom: 4%;	
 	}
 
+	.post--container--button {
+		transform: scale(0.9);
+	}
+
 	/* .login--container {
 		width: 80%;
 	}
@@ -341,6 +353,10 @@ body {
 	.userinfo--container {
 		max-width: 70%;
 		left: 15%;
+	}
+
+	.post--container--button {
+		transform: scale(1);
 	}
 
 	/* .login--container {
@@ -404,6 +420,10 @@ body {
 
 	.footer {
 		color: white;
+	}
+
+	.post--container--button {
+		transform: scale(0.8);
 	}
 
 	/* .login--container {

@@ -197,7 +197,7 @@ async function fetchMessages(ID) {
 			messageList.push({
 				userID: doc.data().userID,
 				userHandle: doc.data().handle,
-				userProfileIMG: doc.data().profileIMG,
+				// userProfileIMG: doc.data().profileIMG,
 				body: doc.data().body,
 				image: doc.data().image,
 				time: doc.data().time.seconds,
@@ -264,7 +264,7 @@ async function fetchMyMessages(ID) {
 		messageList.push({
 			userID: doc.data().userID,
 			userHandle: doc.data().handle,
-			userProfileIMG: doc.data().profileIMG,
+			// userProfileIMG: doc.data().profileIMG,
 			body: doc.data().body,
 			image: doc.data().image,
 			time: doc.data().time.seconds,
@@ -368,7 +368,7 @@ export const addNewMessage = createAsyncThunk(
 			userID: userID,
 			handle: handle,
 			handle_lowercase: handleLowercase,
-			profileIMG: profileIMG,
+			// profileIMG: profileIMG,
 			time: new Date(),
 			body: body,
 			image: image,

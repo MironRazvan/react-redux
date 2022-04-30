@@ -5,10 +5,10 @@ import {
 	Modal,
 	OverlayTrigger,
 	Tooltip,
-	Button,
 	Form,
 	FloatingLabel,
 } from "react-bootstrap"
+import { Button } from "@mui/material"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { useNavigate } from "react-router-dom"
 import { auth, db, storage } from "../firebase/firebase"
@@ -155,6 +155,7 @@ function MyPage() {
 		})
 		return customURL
 	}
+
 	useEffect(() => {
 		let ignore = false
 
@@ -163,12 +164,12 @@ function MyPage() {
 				navigate("/login")
 				return
 			} else {
-				const userInfo = follows.friendInfo.find(
-					(friend) => friend.userID === user.uid
-				)
-				dispatch(fetchMyPosts(userInfo.userID))
-				setCurrentUserInfo(userInfo)
-				setCurrentProfilePicture(userInfo.profileIMG)
+				follows.friendInfo.forEach((friend) => {
+					if (friend.userID === user.uid) {
+						setCurrentUserInfo(friend)
+						setCurrentProfilePicture(friend.profileIMG)
+					}
+				})
 				window.scrollTo(0, 0)
 			}
 		}
@@ -176,7 +177,13 @@ function MyPage() {
 		return () => {
 			ignore = true
 		}
-	}, [user, loading, posts.posts.length, follows])
+	}, [user, loading, follows])
+
+	useEffect(() => {
+		if (user) {
+			dispatch(fetchMyPosts(user.uid))
+		}
+	}, [posts.posts.length])
 
 	return (
 		<>
@@ -325,13 +332,15 @@ function MyPage() {
 						</Modal.Body>
 						<Modal.Footer>
 							<Button
-								variant="secondary"
+								variant="contained"
+								color="secondary"
 								onClick={handleFormCancel}
 							>
 								Cancel
 							</Button>
 							<Button
-								variant="primary"
+								variant="contained"
+								color="primary"
 								onClick={handleFormSubmit}
 							>
 								Save changes
