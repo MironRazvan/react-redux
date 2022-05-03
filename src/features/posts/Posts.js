@@ -32,13 +32,21 @@ function Posts(props) {
 				<div className="spinner--container">
 					<Spinner animation="border" variant="info" />
 				</div>
+			) : props.useCase !== undefined ? (
+				<div
+					className="post--error--container alert alert-info"
+					role="alert"
+				>
+					<h4 className="alert-heading">No posts to show</h4>
+					You could search for people you know and follow them.
+				</div>
 			) : (
 				<div
 					className="post--error--container alert alert-info"
 					role="alert"
 				>
 					<h4 className="alert-heading">No posts to show</h4>
-					You can try searching for people you know and follow them.
+					This user hasn't made any posts yet.
 				</div>
 			)}
 		</>

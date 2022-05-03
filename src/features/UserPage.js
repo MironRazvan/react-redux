@@ -15,13 +15,14 @@ import { Fab } from "@mui/material"
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1"
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
-import { fetchFollowsInfo } from "./follows/followsSlice"
+import { fetchFollowsInfo, selectFollows } from "./follows/followsSlice"
 
 function UserPage(props) {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const posts = useSelector(selectPosts)
+	const follows = useSelector(selectFollows)
 	const [user, loading] = useAuthState(auth)
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [show, setShow] = useState(false)
@@ -60,8 +61,20 @@ function UserPage(props) {
 				userID: location.state.userID,
 				followState: posts.follows.includes(location.state.userID),
 			})
-		).then()
-		dispatch(fetchFollowsInfo(posts.follows))
+		)
+		if (!posts.follows.includes(location.state.userID)) {
+			dispatch(
+				fetchFollowsInfo(posts.follows.concat(location.state.userID))
+			)
+		} else {
+			dispatch(
+				fetchFollowsInfo(
+					posts.follows.filter(
+						(friend) => friend !== location.state.userID
+					)
+				)
+			)
+		}
 	}
 
 	return (

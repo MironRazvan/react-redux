@@ -27,19 +27,16 @@ function PostMessage() {
 		if (userImage) {
 			imageURL = await fetchImageURLFromFirebase()
 		}
+
 		if (imageURL != "" || userMessage.current.value != "") {
-			let myProfileIMG
-			follows.friendInfo.forEach((friend) => {
-				if (friend.userID === user.uid) {
-					myProfileIMG = friend.profileIMG
-				}
-			})
 			dispatch(
 				addNewMessage({
 					userID: user.uid,
+					// name: follows.friendInfo.find(
+					// 	(friend) => friend.userID === user.uid
+					// ).name,
 					handle: userHandle,
 					handleLowercase: userHandle.toLocaleLowerCase(),
-					// profileIMG: myProfileIMG,
 					body: userMessage.current.value,
 					image: imageURL,
 				})

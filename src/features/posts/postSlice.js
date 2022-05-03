@@ -196,8 +196,8 @@ async function fetchMessages(ID) {
 			// messageList = messageList.concat(info)
 			messageList.push({
 				userID: doc.data().userID,
+				// name: doc.data().name,
 				userHandle: doc.data().handle,
-				// userProfileIMG: doc.data().profileIMG,
 				body: doc.data().body,
 				image: doc.data().image,
 				time: doc.data().time.seconds,
@@ -263,8 +263,8 @@ async function fetchMyMessages(ID) {
 		// messageList = messageList.concat(info)
 		messageList.push({
 			userID: doc.data().userID,
+			// name: doc.data().name,
 			userHandle: doc.data().handle,
-			// userProfileIMG: doc.data().profileIMG,
 			body: doc.data().body,
 			image: doc.data().image,
 			time: doc.data().time.seconds,
@@ -363,12 +363,12 @@ export const fetchMyPosts = createAsyncThunk("fetchMyPosts", async (userID) => {
 
 export const addNewMessage = createAsyncThunk(
 	"addNewPost",
-	async ({ userID, handle, handleLowercase, profileIMG, body, image }) => {
+	async ({ userID, name, handle, handleLowercase, body, image }) => {
 		return await addDoc(collection(db, "user_posts"), {
 			userID: userID,
+			// name: name,
 			handle: handle,
 			handle_lowercase: handleLowercase,
-			// profileIMG: profileIMG,
 			time: new Date(),
 			body: body,
 			image: image,

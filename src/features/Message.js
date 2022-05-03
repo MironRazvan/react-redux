@@ -21,6 +21,7 @@ function Message(props) {
 	const [showPicture, setShowPicture] = useState(false)
 	const [showConfirmation, setShowConfirmation] = useState(false)
 	const [currentPicture, setCurrentPicture] = useState("")
+	const [currentName, setCurrentName] = useState("")
 	const [user] = useAuthState(auth)
 	const follows = useSelector(selectFollows)
 
@@ -55,10 +56,8 @@ function Message(props) {
 		const fetchProfileIMG = async (id) => {
 			const docUserInfo = doc(db, `user_info/${id}`)
 			const docInfo = await getDoc(docUserInfo)
-			return docInfo.data().profileIMG
+			return { img: docInfo.data().profileIMG, name: docInfo.data().name }
 		}
-
-		// console.log(props.array)
 
 		if (!follows.loading && follows.friendInfo) {
 			if (!ignore && !currentPicture) {
@@ -66,11 +65,16 @@ function Message(props) {
 				follows.friendInfo.forEach((friend) => {
 					if (friend.userID === props.array.userID) {
 						setCurrentPicture(friend.profileIMG)
+						setCurrentName(friend.name)
 						return
 					}
 				})
+				// if not found in state, then retreive data from firestore
 				fetchProfileIMG(props.array.userID)
-					.then((res) => setCurrentPicture(res))
+					.then((res) => {
+						setCurrentPicture(res.img)
+						setCurrentName(res.name)
+					})
 					.catch((e) => console.log("Loading data..."))
 			}
 		}
@@ -217,8 +221,13 @@ function Message(props) {
 								boxShadow: "0px 0px 0px 1px white",
 							}}
 						></img>
-						<p className="mb-0" style={{ cursor: "pointer" }}>
-							{props.array.userHandle}
+						<p>
+							<p style={{ cursor: "pointer" }}>
+								<b className="mb-0">{currentName}</b>
+								<span className="text-muted mb-0">
+									(@{props.array.userHandle})
+								</span>
+							</p>
 							<span className="text-muted">
 								({formatRelativeDate(props.array.time * 1000)})
 							</span>

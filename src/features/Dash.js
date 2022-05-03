@@ -43,7 +43,7 @@ function Dash() {
 			return
 		}
 		navigate("/userpage", {
-			state: { username: username, userID: userID },
+			state: { username: username, userID: userID, useCase: "self" },
 		})
 	}
 

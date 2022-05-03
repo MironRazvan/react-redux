@@ -24,7 +24,7 @@ function Header() {
 		// console.log(follows)
 		follows.friendInfo.forEach((friend) => {
 			if (friend.userID === user.uid) {
-				setUserHandle(friend.handle)
+				setUserHandle(friend.name.split(" ")[0])
 				setUserPicture(friend.profileIMG)
 			}
 		})

@@ -125,8 +125,8 @@ body {
 }
 
 .post--error--container {
-	width: 90%;
-	left: 5%;
+	width: 95%;
+	left: 2.5%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -145,16 +145,27 @@ body {
 .post--container--header {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
 }
 .post--container--header > p {
-	display: flex;
-	align-items: center;
-	gap: 1vh;
+	display: flex !important;
+	flex-direction: column;
+	justify-content: space-evenly;
+	gap: 0;
+	margin-bottom: 0%;
 }
+
+.post--container--header > p > p {
+	margin-bottom: 0.25rem;
+}
+
+.post--container--header > p > p > span {
+	font-size: 0.8em;
+	margin-left: 0.25rem;
+}
+
 .post--container--header > p > span {
 	font-size: 0.6em;
-	vertical-align: baseline;
+	vertical-align: text-top;
 }
 
 .post--container--body {
@@ -251,6 +262,7 @@ body {
 }
 
 .footer {
+	opacity: 0%;
 	width: 100%;
 	height: 2em;
 	font-size: 0.7rem !important;
@@ -297,6 +309,11 @@ body {
 
 	.post--container--button {
 		transform: scale(0.9);
+	}
+
+	.post--error--container {
+		max-width: 90%;
+		left: 5%;
 	}
 
 	/* .login--container {
@@ -364,6 +381,16 @@ body {
 		transform: scale(1);
 	}
 
+	.post--error--container {
+		max-width: 70%;
+		left: 15%;
+	}
+	
+	.footer {
+		color: white;
+		opacity: 1;
+	}
+
 	/* .login--container {
 		width: 60%;
 	}
@@ -423,12 +450,14 @@ body {
 		padding: 1rem 5px !important;
 	}
 
-	.footer {
-		color: white;
-	}
 
 	.post--container--button {
 		transform: scale(0.8);
+	}
+
+	.post--error--container {
+		max-width: 50%;
+		left: 25%;
 	}
 
 	/* .login--container {
