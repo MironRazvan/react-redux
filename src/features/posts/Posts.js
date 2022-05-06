@@ -1,17 +1,12 @@
-import React, { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import React from "react"
+import { useSelector } from "react-redux"
 import { selectPosts } from "./postSlice"
 import { nanoid } from "nanoid"
 import Message from "../Message"
 import { Spinner } from "react-bootstrap"
-import { fetchMyPosts } from "../posts/postSlice"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "../../firebase/firebase"
 
 function Posts(props) {
 	const posts = useSelector(selectPosts)
-	const dispatch = useDispatch()
-	const [user] = useAuthState(auth)
 
 	return (
 		<>

@@ -15,14 +15,13 @@ import { Fab } from "@mui/material"
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1"
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
-import { fetchFollowsInfo, selectFollows } from "./follows/followsSlice"
+import { fetchFollowsInfo } from "./follows/followsSlice"
 
 function UserPage(props) {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const dispatch = useDispatch()
 	const posts = useSelector(selectPosts)
-	const follows = useSelector(selectFollows)
 	const [user, loading] = useAuthState(auth)
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [show, setShow] = useState(false)
@@ -101,6 +100,7 @@ function UserPage(props) {
 										maxHeight: "100vh",
 										margin: "auto",
 									}}
+									alt="profile image"
 								/>
 							</div>
 						</Modal.Body>
@@ -111,6 +111,7 @@ function UserPage(props) {
 								<img
 									src={currentUserInfo.profileIMG}
 									onClick={() => setShow(true)}
+									alt="user profile image"
 								/>
 								<br></br>
 								<h6>

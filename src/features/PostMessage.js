@@ -9,12 +9,9 @@ import { useDispatch } from "react-redux"
 import { addNewMessage } from "./posts/postSlice"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
 import CancelIcon from "@mui/icons-material/Cancel"
-import { useSelector } from "react-redux"
-import { selectFollows } from "./follows/followsSlice"
 
 function PostMessage() {
 	const userMessage = useRef()
-	const follows = useSelector(selectFollows)
 	const [userImage, setUserImage] = useState(null)
 	const [localUserImageURL, setLocalUserImageURL] = useState("")
 	const dispatch = useDispatch()
@@ -28,13 +25,10 @@ function PostMessage() {
 			imageURL = await fetchImageURLFromFirebase()
 		}
 
-		if (imageURL != "" || userMessage.current.value != "") {
+		if (imageURL !== "" || userMessage.current.value !== "") {
 			dispatch(
 				addNewMessage({
 					userID: user.uid,
-					// name: follows.friendInfo.find(
-					// 	(friend) => friend.userID === user.uid
-					// ).name,
 					handle: userHandle,
 					handleLowercase: userHandle.toLocaleLowerCase(),
 					body: userMessage.current.value,
@@ -101,7 +95,7 @@ function PostMessage() {
 		return () => {
 			ignore = true
 		}
-	}, [localUserImageURL])
+	}, [localUserImageURL, user])
 
 	return (
 		<>
@@ -173,6 +167,7 @@ function PostMessage() {
 						className="postMessage--imgPreview"
 						style={{ width: "100%" }}
 						src={localUserImageURL}
+						alt="upload preview"
 					/>
 					<CancelIcon
 						style={{

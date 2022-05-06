@@ -37,6 +37,9 @@ export const followsSlice = createSlice({
 				(user) => user.userID === action.payload.userID
 			).about = action.payload.about
 		},
+		handleNewAcountInfo(state, action) {
+			state.friendInfo = [action.payload]
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -59,7 +62,6 @@ export const followsSlice = createSlice({
 async function fetchInfo(userList) {
 	const tempList = []
 	for (const user in userList) {
-		// console.log(userList[user])
 		const docUserInfo = doc(db, `user_info/${userList[user]}`)
 		const docInfo = await getDoc(docUserInfo)
 		tempList.push(docInfo.data())
@@ -76,7 +78,13 @@ export const fetchFollowsInfo = createAsyncThunk(
 
 export const selectFollows = (state) => state.follows
 
-export const { updateIMG, updateName, updateAge, updateLocation, updateAbout } =
-	followsSlice.actions
+export const {
+	updateIMG,
+	updateName,
+	updateAge,
+	updateLocation,
+	updateAbout,
+	handleNewAcountInfo,
+} = followsSlice.actions
 
 export default followsSlice.reducer

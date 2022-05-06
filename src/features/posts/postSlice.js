@@ -26,7 +26,15 @@ const initialState = {
 export const postsSlice = createSlice({
 	name: "posts",
 	initialState,
-	reducers: {},
+	reducers: {
+		handleNewAccount(state, action) {
+			return {
+				...state,
+				follows: [action.payload],
+				error: "",
+			}
+		},
+	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(fetchFollowedPosts.pending, (state) => {
@@ -64,13 +72,14 @@ export const postsSlice = createSlice({
 							...state,
 							posts: state.posts.filter((post) => {
 								for (var key in searchKey) {
-									if (post[key] != searchKey[key]) return true
+									if (post[key] !== searchKey[key])
+										return true
 									return false
 								}
 							}),
 						}
 					case "IMAGE":
-						var searchKey = {
+						searchKey = {
 							userID: action.payload.userID,
 							image: action.payload.image,
 						}
@@ -78,11 +87,14 @@ export const postsSlice = createSlice({
 							...state,
 							posts: state.posts.filter((post) => {
 								for (var key in searchKey) {
-									if (post[key] != searchKey[key]) return true
+									if (post[key] !== searchKey[key])
+										return true
 									return false
 								}
 							}),
 						}
+					default:
+						return state
 				}
 			})
 			.addCase(fetchFollowedAccounts.fulfilled, (state, action) => {
@@ -120,7 +132,7 @@ export const postsSlice = createSlice({
 							...state,
 							follows: state.follows.filter(
 								(accountID) =>
-									accountID != action.payload.userID
+									accountID !== action.payload.userID
 							),
 						}
 					default:
@@ -138,7 +150,7 @@ export const postsSlice = createSlice({
 										...post,
 										likes: post.likes.filter(
 											(likeIDs) =>
-												likeIDs != action.payload.myID
+												likeIDs !== action.payload.myID
 										),
 									}
 								} else {
@@ -211,7 +223,7 @@ async function fetchMessages(ID) {
 
 async function handleLikeClick(myID, userID, userMessage) {
 	// if is our own post
-	if (userID == myID) return { action: "" }
+	if (userID === myID) return { action: "" }
 
 	// get message id so we can update it
 	const q = query(
@@ -384,6 +396,8 @@ export const deleteMessage = createAsyncThunk(
 		return await handleMessageDelete(userID, message, image)
 	}
 )
+
+export const { handleNewAccount } = postsSlice.actions
 
 export const selectPosts = (state) => state.posts
 

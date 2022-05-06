@@ -4,11 +4,10 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../firebase/firebase"
 import { useDispatch, useSelector } from "react-redux"
 import { signout } from "./login/loginSlice"
-import { doc, getDoc } from "firebase/firestore"
-import { db } from "../firebase/firebase"
 import { useNavigate } from "react-router-dom"
 import { selectFollows } from "../features/follows/followsSlice"
-import { fetchMyPosts } from "./posts/postSlice"
+import { fetchMyPosts, selectPosts } from "./posts/postSlice"
+import { fetchFollowsInfo } from "./follows/followsSlice"
 
 function Header() {
 	const [user, loading] = useAuthState(auth)
@@ -17,41 +16,25 @@ function Header() {
 	const [userPicture, setUserPicture] = useState(null)
 	const dispatch = useDispatch()
 	const follows = useSelector(selectFollows)
+	const posts = useSelector(selectPosts)
 
 	useEffect(() => {
 		let ignore = false
 		if (!user && loading) return
-		// console.log(follows)
+
 		follows.friendInfo.forEach((friend) => {
 			if (friend.userID === user.uid) {
-				setUserHandle(friend.name.split(" ")[0])
-				setUserPicture(friend.profileIMG)
+				if (!ignore) {
+					setUserHandle(friend.name.split(" ")[0])
+					setUserPicture(friend.profileIMG)
+				}
 			}
 		})
 
-		// load user handle on Header load based on user id
-		// const fetchHandle = async () => {
-		// 	const docUserInfo = doc(db, `user_info/${user.uid}`)
-		// 	const docInfo = await getDoc(docUserInfo)
-		// 	if (!ignore) {
-		// 		setUserHandle(docInfo.data().handle)
-		// const myProfilePicture = follows.friendInfo.find(
-		// 	(friend) => friend.userID === user.uid
-		// )
-		// setUserPicture(myProfilePicture.profileIMG)
-		// 		setUserPicture(docInfo.data().profileIMG)
-		// 	}
-		// }
-
-		// if (!loading) {
-		// 	fetchHandle().catch((e) =>
-		// 		console.log("Error fetching handle for header")
-		// 	)
-		// }
 		return () => {
 			ignore = true
 		}
-	}, [user, loading, follows])
+	}, [user, loading, follows.friendInfo.length])
 
 	function handleUsernameClick() {
 		dispatch(fetchMyPosts(user.uid))
@@ -72,6 +55,7 @@ function Header() {
 					<img
 						className="header--image"
 						src={require("../images/logo.png")}
+						alt="app logo"
 					/>
 					<h3 className="header--title" style={{ cursor: "pointer" }}>
 						ReactSocial
@@ -95,6 +79,7 @@ function Header() {
 									boxShadow: "0px 0px 0px 1px white",
 								}}
 								onClick={handleUsernameClick}
+								alt="user profile"
 							/>
 							<h4
 								className="mb-0"

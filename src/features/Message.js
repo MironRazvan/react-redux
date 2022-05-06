@@ -82,7 +82,7 @@ function Message(props) {
 		return () => {
 			ignore = true
 		}
-	}, [])
+	}, [user, follows.friendInfo])
 
 	function formatRelativeDate(toDate, fromDate = new Date()) {
 		let duration = (toDate - fromDate) / 1000
@@ -153,6 +153,7 @@ function Message(props) {
 								maxHeight: "100vh",
 								margin: "auto",
 							}}
+							alt="full size image"
 						/>
 					</div>
 				</Modal.Body>
@@ -220,8 +221,9 @@ function Message(props) {
 								cursor: "pointer",
 								boxShadow: "0px 0px 0px 1px white",
 							}}
+							alt="user profile picture"
 						></img>
-						<p>
+						<div>
 							<p style={{ cursor: "pointer" }}>
 								<b className="mb-0">{currentName}</b>
 								<span className="text-muted mb-0">
@@ -231,7 +233,7 @@ function Message(props) {
 							<span className="text-muted">
 								({formatRelativeDate(props.array.time * 1000)})
 							</span>
-						</p>
+						</div>
 					</h6>
 					<Card.Body
 						style={{ backgroundColor: "var(--custom-card-body)" }}
@@ -270,6 +272,7 @@ function Message(props) {
 											transform: "translateX(-50%)",
 										}}
 										src={props.array.image}
+										alt="post image"
 									/>
 								</div>
 							)}

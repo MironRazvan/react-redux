@@ -11,14 +11,15 @@ import Header from "./Header"
 import PostMessage from "./PostMessage"
 import SearchUser from "./SearchUser"
 import { selectPosts } from "./posts/postSlice"
-import { fetchFollowedAccounts, fetchFollowedPosts } from "./posts/postSlice"
-import { fetchFollowsInfo } from "./follows/followsSlice"
+import { fetchFollowedPosts } from "./posts/postSlice"
+import { fetchFollowsInfo, selectFollows } from "./follows/followsSlice"
 
 function Dash() {
 	const [user, loading] = useAuthState(auth)
 	const dispatch = useDispatch()
 	const isLoggedIn = useSelector(selectUser)
 	const posts = useSelector(selectPosts)
+	const follows = useSelector(selectFollows)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -33,8 +34,9 @@ function Dash() {
 	useEffect(() => {
 		if (user) {
 			dispatch(fetchFollowedPosts(user.uid))
+			// dispatch(fetchFollowsInfo(posts.follows))
 		}
-	}, [posts.posts.length, user])
+	}, [posts.posts.length, follows.friendInfo.length, user])
 
 	function handleUserSearchClick(event, username, userID) {
 		event.preventDefault()

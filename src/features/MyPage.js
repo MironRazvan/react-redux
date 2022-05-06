@@ -13,7 +13,7 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { useNavigate } from "react-router-dom"
 import { auth, db, storage } from "../firebase/firebase"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc } from "firebase/firestore"
 import Footer from "./Footer"
 import Header from "./Header"
 import Posts from "./posts/Posts"
@@ -106,10 +106,10 @@ function MyPage() {
 				profileIMG: `${imgURL}`,
 			})
 			// update redux state and firebase storage (userImage on posts is fetched from there)
-			const storageRef = ref(
-				storage,
-				`users_uploads/${user.uid}/${user.uid}_PROFILE`
-			)
+			// const storageRef = ref(
+			// 	storage,
+			// 	`users_uploads/${user.uid}/${user.uid}_PROFILE`
+			// )
 			dispatch(updateIMG({ img: imgURL, userID: user.uid }))
 		}
 		if (name) {
@@ -145,7 +145,7 @@ function MyPage() {
 
 	// uploads image to firebase storage and retrieves a url
 	async function fetchImageURLFromFirebase() {
-		const fileName = user.uid + "_" + "PROFILE"
+		const fileName = user.uid + "_PROFILE"
 		const uploadRef = ref(storage, `users_uploads/${user.uid}/${fileName}`)
 		let customURL = ""
 		await uploadBytes(uploadRef, userImage).then(async (result) => {
@@ -166,8 +166,10 @@ function MyPage() {
 			} else {
 				follows.friendInfo.forEach((friend) => {
 					if (friend.userID === user.uid) {
-						setCurrentUserInfo(friend)
-						setCurrentProfilePicture(friend.profileIMG)
+						if (!ignore) {
+							setCurrentUserInfo(friend)
+							setCurrentProfilePicture(friend.profileIMG)
+						}
 					}
 				})
 				window.scrollTo(0, 0)
@@ -211,6 +213,7 @@ function MyPage() {
 										maxHeight: "100vh",
 										margin: "auto",
 									}}
+									alt="full post body"
 								/>
 							</div>
 						</Modal.Body>
@@ -244,6 +247,7 @@ function MyPage() {
 												borderRadius: "50%",
 												marginRight: "0.5em",
 											}}
+											alt="current profile image"
 										/>
 										<div
 											className="input-group-append"
@@ -371,6 +375,7 @@ function MyPage() {
 								<img
 									src={currentUserInfo.profileIMG}
 									onClick={() => setShowPictureModal(true)}
+									alt="user profile"
 								/>
 								<br></br>
 								<h6>

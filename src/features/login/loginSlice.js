@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { logInWithEmailAndPassword, logout } from "../../firebase/firebase"
+import {
+	logInWithEmailAndPassword,
+	logout,
+	registerWithEmailAndPassword,
+} from "../../firebase/firebase"
 
 const initialState = {
 	loading: false,
@@ -28,6 +32,21 @@ export const loginSlice = createSlice({
 				state.isSet = false
 				state.error = "Unable to log in"
 			})
+			.addCase(register.pending, (state) => {
+				state.loading = true
+				state.isSet = false
+				state.error = ""
+			})
+			.addCase(register.fulfilled, (state) => {
+				state.loading = false
+				state.isSet = true
+				state.error = ""
+			})
+			.addCase(register.rejected, (state, action) => {
+				state.loading = false
+				state.isSet = false
+				state.error = action.payload
+			})
 			.addCase(signout.pending, (state) => {
 				state.loading = true
 			})
@@ -42,6 +61,13 @@ export const login = createAsyncThunk(
 	"userLogin",
 	async ({ email, password }) => {
 		await logInWithEmailAndPassword(email, password)
+	}
+)
+
+export const register = createAsyncThunk(
+	"userRegister",
+	async ({ email, password }) => {
+		await registerWithEmailAndPassword(email, password)
 	}
 )
 

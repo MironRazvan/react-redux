@@ -4,7 +4,7 @@ import { Button, Form, Alert, Card, Container } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "../../firebase/firebase"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { fetchFollowedAccounts, fetchFollowedPosts } from "../posts/postSlice"
 import { fetchFollowsInfo } from "../follows/followsSlice"
 import { selectPosts } from "../posts/postSlice"
@@ -27,7 +27,7 @@ function Login() {
 			navigate("/")
 			return
 		}
-	}, [isLoggedIn])
+	}, [isLoggedIn, currentUser, loading])
 
 	function handleSubmit(event) {
 		event.preventDefault()
@@ -54,7 +54,7 @@ function Login() {
 					<Card.Body>
 						<h2 className="text-center mb-4">Login</h2>
 						{err && <Alert variant="danger">{err}</Alert>}
-						{isLoggedIn.error != "" && (
+						{isLoggedIn.error !== "" && (
 							<Alert variant="danger">{isLoggedIn.error}</Alert>
 						)}
 						<Form onSubmit={handleSubmit}>
@@ -76,9 +76,12 @@ function Login() {
 						</Form>
 					</Card.Body>
 				</Card>
-				<div className="w-100 text-center mt-2">
+				<div
+					className="w-100 text-center mt-2"
+					style={{ color: "white" }}
+				>
 					Don't have an account?{" "}
-					{/* <Link to="/register">Create An Account</Link> */}
+					<Link to="/register">Create An Account</Link>
 				</div>
 			</Container>
 			{/* <Footer /> */}

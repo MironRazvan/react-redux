@@ -146,7 +146,7 @@ body {
 	display: flex;
 	align-items: center;
 }
-.post--container--header > p {
+.post--container--header > div {
 	display: flex !important;
 	flex-direction: column;
 	justify-content: space-evenly;
@@ -154,16 +154,16 @@ body {
 	margin-bottom: 0%;
 }
 
-.post--container--header > p > p {
+.post--container--header > div > p {
 	margin-bottom: 0.25rem;
 }
 
-.post--container--header > p > p > span {
+.post--container--header > div > p > span {
 	font-size: 0.8em;
 	margin-left: 0.25rem;
 }
 
-.post--container--header > p > span {
+.post--container--header > div > span {
 	font-size: 0.6em;
 	vertical-align: text-top;
 }
