@@ -128,7 +128,14 @@ function UserPage(props) {
 								}}
 							>
 								<div className="d-flex flex-column align-items-center">
-									<div className="d-flex align-items-center">
+									<div
+										className="d-flex align-items-center"
+										style={
+											currentUserInfo.about
+												? { marginBottom: "0" }
+												: { marginBottom: "0.5rem" }
+										}
+									>
 										<p style={{ margin: "0" }}>
 											<LocationOnIcon fontSize="small" />
 											<strong>
