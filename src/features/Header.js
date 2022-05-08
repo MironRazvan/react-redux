@@ -6,8 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { signout } from "./login/loginSlice"
 import { useNavigate } from "react-router-dom"
 import { selectFollows } from "../features/follows/followsSlice"
-import { fetchMyPosts, selectPosts } from "./posts/postSlice"
-import { fetchFollowsInfo } from "./follows/followsSlice"
+import { fetchMyPosts } from "./posts/postSlice"
 
 function Header() {
 	const [user, loading] = useAuthState(auth)
@@ -16,7 +15,6 @@ function Header() {
 	const [userPicture, setUserPicture] = useState(null)
 	const dispatch = useDispatch()
 	const follows = useSelector(selectFollows)
-	const posts = useSelector(selectPosts)
 
 	useEffect(() => {
 		let ignore = false

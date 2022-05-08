@@ -116,14 +116,6 @@ export default function Register() {
 			return
 		}
 		navigate("/")
-
-		if (follow.friendInfo[0].handle && follow.friendInfo[0].handle !== "") {
-			console.log(posts)
-			console.log("----------------------")
-			console.log(follow.friendInfo)
-			console.log("----------------------")
-			// return
-		}
 	}, [user, imageLink, follow.friendInfo[0]])
 
 	function pascalCase(str) {

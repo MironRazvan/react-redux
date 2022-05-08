@@ -7,13 +7,30 @@ import {
 	Tooltip,
 	Form,
 	FloatingLabel,
+	Alert,
 } from "react-bootstrap"
 import { Button } from "@mui/material"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { useNavigate } from "react-router-dom"
 import { auth, db, storage } from "../firebase/firebase"
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
-import { doc, updateDoc } from "firebase/firestore"
+import {
+	deleteObject,
+	getDownloadURL,
+	listAll,
+	ref,
+	uploadBytes,
+} from "firebase/storage"
+import {
+	doc,
+	updateDoc,
+	query,
+	collection,
+	where,
+	getDocs,
+	deleteDoc,
+	getDoc,
+	arrayRemove,
+} from "firebase/firestore"
 import Footer from "./Footer"
 import Header from "./Header"
 import Posts from "./posts/Posts"
@@ -21,8 +38,9 @@ import PostMessage from "./PostMessage"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
 import EditIcon from "@mui/icons-material/Edit"
 import { useDispatch, useSelector } from "react-redux"
-import { fetchMyPosts, selectPosts } from "./posts/postSlice"
+import { fetchMyPosts, handleNewAccount, selectPosts } from "./posts/postSlice"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import {
 	selectFollows,
 	updateIMG,
@@ -30,12 +48,27 @@ import {
 	updateAge,
 	updateLocation,
 	updateAbout,
+	handleNewAcountInfo,
 } from "./follows/followsSlice"
+import {
+	reauthenticateWithCredential,
+	EmailAuthProvider,
+	deleteUser,
+} from "firebase/auth"
+import { validate } from "react-email-validator"
+import { updateEmail, updatePassword } from "firebase/auth"
+import { signout } from "./login/loginSlice"
 
 function MyPage() {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
+	const email = useRef()
+	const emailUpdate = useRef()
+	const password = useRef()
+	const passwordUpdate = useRef()
+	const passwordConfirm = useRef()
+	const passwordConfirmUpdate = useRef()
 	const name = useRef()
 	const age = useRef()
 	const location = useRef()
@@ -49,9 +82,19 @@ function MyPage() {
 	const [currentUserInfo, setCurrentUserInfo] = useState([])
 	const [showPictureModal, setShowPictureModal] = useState(false)
 	const [showUpdateInfoModal, setShowUpdateInfoModal] = useState(false)
+	const [showUpdateAccount, setShowUpdateAccount] = useState(false)
+	const [showReauthenticate, setShowReauthenticate] = useState(false)
+	const [isReAuth, setIsReAuth] = useState(false)
+	const [updateField, setUpdateField] = useState("")
+	const [err, setErr] = useState("")
+	const [updateError, setUpdateError] = useState("")
 
-	const showTooltip = (props) => {
+	const showEditTooltip = (props) => {
 		return <Tooltip {...props}>Edit profile details</Tooltip>
+	}
+
+	const showAccountTooltip = (props) => {
+		return <Tooltip {...props}>Edit account details</Tooltip>
 	}
 
 	function pascalCase(str) {
@@ -73,6 +116,12 @@ function MyPage() {
 
 	function handleFormCancel() {
 		setShowUpdateInfoModal(false)
+		setShowUpdateAccount(false)
+		setShowReauthenticate(false)
+		setIsReAuth(false)
+		setUpdateField("")
+		setErr("")
+		setUpdateError("")
 		setCurrentProfilePicture(currentUserInfo.profileIMG)
 		setUserImage(null)
 	}
@@ -156,6 +205,147 @@ function MyPage() {
 		return customURL
 	}
 
+	function handleEmailChange() {
+		setShowUpdateAccount(false)
+		setShowReauthenticate(true)
+		setUpdateField("email")
+	}
+
+	function handlePasswordChange() {
+		setShowReauthenticate(true)
+		setShowUpdateAccount(false)
+		setUpdateField("password")
+	}
+
+	function handleAccountDelete() {
+		setShowReauthenticate(true)
+		setShowUpdateAccount(false)
+		setUpdateField("account")
+	}
+
+	function checkAuthCredentials() {
+		if (!email.current.value || !password.current.value) return
+
+		const credential = EmailAuthProvider.credential(
+			email.current.value,
+			password.current.value
+		)
+		reauthenticateWithCredential(user, credential)
+			.then(() => {
+				setIsReAuth(true)
+				setShowReauthenticate(false)
+			})
+			.catch((e) => {
+				console.log(e.message)
+				setErr(e.message)
+			})
+	}
+
+	async function handleDelete() {
+		// dispatch function for redux (avoids errors with missing data)
+		dispatch(handleNewAccount([]))
+		dispatch(
+			handleNewAcountInfo({
+				handle: "",
+				profileIMG: "",
+			})
+		)
+
+		// delete messages from user_posts
+		const q = query(
+			collection(db, "user_posts"),
+			where("userID", "==", `${user.uid}`)
+		)
+		const qSnap = await getDocs(q)
+		qSnap.forEach(async (post) => {
+			await deleteDoc(doc(db, "user_posts", post.id))
+		})
+
+		// delete user from user_info follows
+		const q2 = query(
+			collection(db, "user_info"),
+			where("follows", "array-contains", `${user.uid}`)
+		)
+		const qSnap2 = await getDocs(q2)
+		qSnap2.forEach(async (userInfo) => {
+			if (userInfo.data().follows.length > 1) {
+				// then userInfo follows current account and we must remove it
+				const postRef = doc(db, "user_info", `${userInfo.id}`)
+				await updateDoc(postRef, {
+					follows: arrayRemove(`${user.uid}`),
+				})
+			} else {
+				// if there's only one follower it means userInfo is ourself
+				await deleteDoc(doc(db, "user_info", `${user.uid}`))
+			}
+		})
+
+		// delete all user images from storage
+		// firebase storage doesn't allow you to delete folders
+		// the only solution i could find was to iterate through all pictures and delete them one by one
+		const listRef = ref(storage, `users_uploads/${user.uid}`)
+		listAll(listRef)
+			.then((res) => {
+				res.items.forEach(async (image) => {
+					await deleteObject(image).catch((e) => console.log(e))
+				})
+			})
+			.catch((e) => console.log(e))
+	}
+
+	async function handleAccountUpdate() {
+		setUpdateError("")
+		switch (updateField) {
+			case "email":
+				if (!validate(emailUpdate.current.value)) {
+					setUpdateError("Error: Not a valid email!")
+					return
+				}
+				setUpdateError("")
+				updateEmail(user, emailUpdate.current.value)
+					.then(() => dispatch(signout()))
+					.catch((e) => {
+						let myErr = pascalCase(
+							e.customData._tokenResponse.error.message
+						)
+						let customError = myErr.split("_")
+						setUpdateError("Error:")
+						for (const word in customError) {
+							setUpdateError((prevError) =>
+								prevError.concat(" " + customError[word])
+							)
+						}
+					})
+				return
+			case "password":
+				if (
+					passwordUpdate.current.value !==
+					passwordConfirmUpdate.current.value
+				) {
+					setUpdateError("Passwords do no match!")
+					return
+				}
+				updatePassword(user, passwordUpdate.current.value)
+					.then(() => dispatch(signout()))
+					.catch((e) => {
+						setUpdateError("Password not strong enough")
+						return
+					})
+				return
+			case "account":
+				handleDelete()
+					.then(() => {
+						navigate("/login")
+						deleteUser(user).catch((e) => console.log(e))
+						return
+					})
+					.catch((e) => console.log(e))
+				return
+			default:
+				return
+		}
+	}
+
 	useEffect(() => {
 		let ignore = false
 
@@ -202,7 +392,6 @@ function MyPage() {
 						size="lg"
 						show={showPictureModal}
 						onHide={() => setShowPictureModal(false)}
-						aria-labelledby="show-fullscreen-image"
 					>
 						<Modal.Body>
 							<div style={{ display: "grid", height: "100%" }}>
@@ -219,12 +408,220 @@ function MyPage() {
 						</Modal.Body>
 					</Modal>
 
+					{/* modal for reauthenticating */}
+					<Modal
+						size="sm"
+						show={showReauthenticate}
+						onHide={handleFormCancel}
+						centered
+					>
+						<Modal.Header closeButton>
+							<Modal.Title>
+								Please insert your login details
+							</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<Form>
+								<Form.Group className="mb-2">
+									<FloatingLabel
+										controlId="emailInput"
+										label={`Email`}
+									>
+										<Form.Control
+											type="email"
+											placeholder="email"
+											ref={email}
+										></Form.Control>
+									</FloatingLabel>
+								</Form.Group>
+								<Form.Group>
+									<FloatingLabel
+										controlId="passwordInput"
+										label={`Password`}
+									>
+										<Form.Control
+											type="password"
+											placeholder="password"
+											ref={password}
+										></Form.Control>
+									</FloatingLabel>
+								</Form.Group>
+							</Form>
+							{err && <Alert variant="danger">{err}</Alert>}
+						</Modal.Body>
+						<Modal.Footer
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								margin: "0 2rem",
+							}}
+						>
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={handleFormCancel}
+							>
+								Cancel
+							</Button>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={checkAuthCredentials}
+							>
+								Submit
+							</Button>
+						</Modal.Footer>
+					</Modal>
+
+					{/* modal for choosing update option */}
+					<Modal
+						size="md"
+						show={showUpdateAccount}
+						onHide={handleFormCancel}
+						centered
+					>
+						<Modal.Header closeButton>
+							<Modal.Title>
+								What do you want to update?
+							</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<div className="d-flex flex-column gap-2">
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={handleEmailChange}
+									disableElevation
+								>
+									Email
+								</Button>
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={handlePasswordChange}
+									disableElevation
+								>
+									Password
+								</Button>
+								<Button
+									variant="contained"
+									color="error"
+									onClick={handleAccountDelete}
+									disableElevation
+								>
+									Delete Account
+								</Button>
+							</div>
+						</Modal.Body>
+					</Modal>
+
+					{/* modal for updating account info (email, password, account delete) */}
+					<Modal
+						size="md"
+						show={isReAuth}
+						onHide={handleFormCancel}
+						arua-lebelledby="update-esential-info"
+						centered
+					>
+						<Modal.Header closeButton>
+							<Modal.Title>Update {updateField}</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<Form>
+								{updateField === "email" && (
+									<Form.Group>
+										<Form.Label>New Email</Form.Label>
+										<Form.Control
+											type="email"
+											ref={emailUpdate}
+											placeholder="Email..."
+											size="sm"
+											required
+										></Form.Control>
+									</Form.Group>
+								)}
+								{updateField === "password" && (
+									<Form.Group>
+										<Form.Label
+											style={{
+												marginBottom: "0",
+												marginTop: "0.5rem",
+											}}
+										>
+											New Password
+										</Form.Label>
+										<Form.Control
+											type="password"
+											ref={passwordUpdate}
+											placeholder="Password..."
+											size="sm"
+										></Form.Control>
+										<Form.Label
+											style={{
+												marginBottom: "0",
+												marginTop: "0.5rem",
+											}}
+										>
+											Confirm New Password
+										</Form.Label>
+										<Form.Control
+											type="password"
+											ref={passwordConfirmUpdate}
+											placeholder="Password confirm..."
+											size="sm"
+										></Form.Control>
+										<Form.Text id="passwordBlockHelp" muted>
+											{" "}
+											Your password must be 6-12
+											characters long, contain letters and
+											numbers, and must not contain
+											spaces.
+										</Form.Text>
+									</Form.Group>
+								)}
+								{updateField === "account" && (
+									<Alert variant="danger">
+										Deleting your account is permanent! Are
+										you sure you want to proceed?
+									</Alert>
+								)}
+							</Form>
+							{updateError && (
+								<Alert className="mt-2 mb-0" variant="danger">
+									{updateError}
+								</Alert>
+							)}
+						</Modal.Body>
+						<Modal.Footer
+							style={{
+								display: "flex",
+								justifyContent: "space-between",
+								margin: "0 2rem",
+							}}
+						>
+							<Button
+								variant="contained"
+								color="secondary"
+								onClick={handleFormCancel}
+							>
+								Cancel
+							</Button>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={handleAccountUpdate}
+							>
+								Submit
+							</Button>
+						</Modal.Footer>
+					</Modal>
+
 					{/* modal for updating user info */}
 					<Modal
 						size="lg"
 						show={showUpdateInfoModal}
 						onHide={handleFormCancel}
-						aria-labelledby="update-user-info"
+						centered
 					>
 						<Modal.Header closeButton>
 							<Modal.Title>Update Profile</Modal.Title>
@@ -358,7 +755,7 @@ function MyPage() {
 							<OverlayTrigger
 								placement="left"
 								delay={{ show: "250", hide: "250" }}
-								overlay={showTooltip}
+								overlay={showEditTooltip}
 							>
 								<EditIcon
 									style={{
@@ -370,7 +767,21 @@ function MyPage() {
 									onClick={() => setShowUpdateInfoModal(true)}
 								/>
 							</OverlayTrigger>
-
+							<OverlayTrigger
+								placement="left"
+								delay={{ show: "250", hide: "250" }}
+								overlay={showAccountTooltip}
+							>
+								<AccountCircleIcon
+									style={{
+										position: "absolute",
+										top: "25%",
+										right: "2%",
+										cursor: "pointer",
+									}}
+									onClick={() => setShowUpdateAccount(true)}
+								/>
+							</OverlayTrigger>
 							<Card.Title className="myinfo--title">
 								<img
 									src={currentUserInfo.profileIMG}
