@@ -12,7 +12,7 @@ import PostMessage from "./PostMessage"
 import SearchUser from "./SearchUser"
 import { selectPosts } from "./posts/postSlice"
 import { fetchFollowedPosts } from "./posts/postSlice"
-import { fetchFollowsInfo, selectFollows } from "./follows/followsSlice"
+import { selectFollows } from "./follows/followsSlice"
 
 function Dash() {
 	const [user, loading] = useAuthState(auth)

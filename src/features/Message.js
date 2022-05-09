@@ -8,12 +8,13 @@ import AddCommentIcon from "@mui/icons-material/AddComment"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import { addLikeToPost, deleteMessage, fetchMyPosts } from "./posts/postSlice"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import "react-confirm-alert/src/react-confirm-alert.css"
 import WarningIcon from "@mui/icons-material/Warning"
 import { selectFollows } from "./follows/followsSlice"
 import { Button } from "@mui/material"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
+import Comments from "./Comments"
 
 function Message(props) {
 	const dispatch = useDispatch()
@@ -244,7 +245,7 @@ function Message(props) {
 								style={{
 									position: "absolute",
 									right: "1%",
-									top: props.array.image ? "1%" : "3%",
+									top: props.array.image ? "3%" : "7%",
 									color: "var(--custom-card-text-colored)",
 									cursor: "pointer",
 								}}
@@ -295,7 +296,16 @@ function Message(props) {
 								}}
 								endIcon={<AddCommentIcon />}
 							>
-								Comment
+								<Link
+									style={{
+										color: "var(--custom-card-text)",
+										textDecoration: "none",
+									}}
+									to="/comments"
+									state={{ post: props.array }}
+								>
+									Comments
+								</Link>
 							</Button>
 							<Button
 								className="post--container--button"

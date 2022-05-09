@@ -23,7 +23,7 @@ function Header() {
 		follows.friendInfo.forEach((friend) => {
 			if (friend.userID === user.uid) {
 				if (!ignore) {
-					setUserHandle(friend.name.split(" ")[0])
+					setUserHandle(friend.name.split(/[\s,-]+/)[0])
 					setUserPicture(friend.profileIMG)
 				}
 			}
@@ -59,11 +59,11 @@ function Header() {
 						ReactSocial
 					</h3>
 				</div>
-				<Stack direction="horizontal" gap={3}>
+				<Stack direction="horizontal" gap={2}>
 					{userHandle && userPicture && (
 						<div
 							className="d-flex align-items-center"
-							style={{ gap: "0.5rem" }}
+							style={{ gap: "0.5rem", marginRight: "0.25rem" }}
 						>
 							<img
 								src={userPicture}

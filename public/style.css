@@ -257,6 +257,79 @@ body {
 	color: var(--custom-card-text)
 }
 
+.add--comment--container {
+	display: flex;
+	max-width: 100%;
+	left: 0%;
+	right: 0%;
+	position: relative;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.add--comment--container > #actual-input {
+	background: var(--custom-card-header);
+	color: var(--custom-card-text-colored)
+}
+
+.add--comment--container > button {
+	position: absolute;
+	right: 0%;
+	display: flex;
+	align-items: center;
+	color: var(--custom-card-text)
+}
+
+.comments--container {
+	margin-top: 2rem;
+	max-width: 100%;
+	left: 0%;
+	right: 0%;
+	display: flex;
+	margin: 0;
+	background-color: var(--custom-card-body) !important;
+	color: white !important;
+	border: 1px solid white !important;
+}
+
+.comments--container > div > hr {
+	border-bottom: 2px solid var(--custom-card-text-colored);
+	width: 85%;
+	align-self: flex-end;
+	position: relative;
+	right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+}
+
+.card-header {
+	display: flex;
+	align-items: center;
+	padding-left: 0.25rem !important;
+}
+
+.commenter--container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.commenter--info {
+	cursor: pointer;
+	margin-bottom: 0.5rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.commenter--info > b > span {
+	font-size: smaller;
+}
+
+.commenter--info > span {
+	font-size: 70%;
+}
+
 .login--container {
 	width: 90%;
 }
@@ -314,6 +387,20 @@ body {
 	.post--error--container {
 		max-width: 90%;
 		left: 5%;
+	}
+
+	.add--comment--container {
+		max-width: 90%;
+		left: 5%;
+	}
+
+	.comments--container {
+		max-width: 90%;
+		left: 5%;
+	}
+
+	.comments--container > div > hr {
+		width: 90%;
 	}
 
 	/* .login--container {
@@ -386,6 +473,16 @@ body {
 		left: 15%;
 	}
 	
+	.add--comment--container {
+		max-width: 70%;
+		left: 15%;
+	}
+
+	.comments--container {
+		max-width: 70%;
+		left: 15%;
+	}
+
 	.footer {
 		color: white;
 		opacity: 1;
@@ -458,6 +555,20 @@ body {
 	.post--error--container {
 		max-width: 50%;
 		left: 25%;
+	}
+
+	.add--comment--container {
+		max-width: 50%;
+		left: 25%;
+	}
+
+	.comments--container {
+		max-width: 50%;
+		left: 25%;
+	}
+	
+	.comments--container > div > hr {
+		width: 90%;
 	}
 
 	/* .login--container {

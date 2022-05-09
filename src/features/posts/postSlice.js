@@ -43,6 +43,12 @@ export const postsSlice = createSlice({
 					loading: true,
 				}
 			})
+			.addCase(fetchMyPosts.pending, (state) => {
+				return {
+					...state,
+					loading: true,
+				}
+			})
 			.addCase(fetchFollowedAccounts.pending, (state) => {
 				return {
 					...state,
@@ -53,6 +59,39 @@ export const postsSlice = createSlice({
 				return {
 					...state,
 					posts: state.posts.concat(action.payload),
+				}
+			})
+			.addCase(addNewComment.pending, (state) => {
+				return {
+					...state,
+					loading: true,
+				}
+			})
+			.addCase(addNewComment.fulfilled, (state, action) => {
+				return {
+					...state,
+					posts: state.posts.map((post, postIndex) => {
+						if (
+							post.userID === action.payload.post.userID &&
+							post.body === action.payload.post.body &&
+							post.image === action.payload.post.image
+						) {
+							return {
+								...state.posts[postIndex],
+								comments: state.posts[
+									postIndex
+								].comments.concat({
+									profileIMG: action.payload.profileIMG,
+									name: action.payload.name,
+									userID: action.payload.name,
+									handle: action.payload.handle,
+									time: new Date(),
+									comment: action.payload.comment,
+								}),
+							}
+						}
+						return state.posts[postIndex]
+					}),
 				}
 			})
 			.addCase(deleteMessage.pending, (state) => {
@@ -70,6 +109,7 @@ export const postsSlice = createSlice({
 						}
 						return {
 							...state,
+							loading: false,
 							posts: state.posts.filter((post) => {
 								for (var key in searchKey) {
 									if (post[key] !== searchKey[key])
@@ -77,6 +117,7 @@ export const postsSlice = createSlice({
 									return false
 								}
 							}),
+							error: "",
 						}
 					case "IMAGE":
 						searchKey = {
@@ -85,6 +126,7 @@ export const postsSlice = createSlice({
 						}
 						return {
 							...state,
+							loading: false,
 							posts: state.posts.filter((post) => {
 								for (var key in searchKey) {
 									if (post[key] !== searchKey[key])
@@ -92,6 +134,7 @@ export const postsSlice = createSlice({
 									return false
 								}
 							}),
+							error: "",
 						}
 					default:
 						return state
@@ -109,6 +152,7 @@ export const postsSlice = createSlice({
 					...state,
 					loading: false,
 					posts: action.payload,
+					error: "",
 				}
 			})
 			.addCase(fetchMyPosts.fulfilled, (state, action) => {
@@ -116,6 +160,7 @@ export const postsSlice = createSlice({
 					...state,
 					loading: false,
 					posts: action.payload,
+					error: "",
 				}
 			})
 			.addCase(handleFollowState.fulfilled, (state, action) => {
@@ -341,6 +386,43 @@ async function handleMessageDelete(userID, message, image) {
 	return { userID: userID, message: message, type: "MESSAGE" }
 }
 
+async function addComment({ post, profileIMG, name, userID, handle, comment }) {
+	const q = query(
+		collection(db, "user_posts"),
+		where("userID", "==", `${post.userID}`),
+		where("body", "==", `${post.body}`)
+	)
+	if (post.image !== "") {
+		const q = query(
+			collection(db, "user_posts"),
+			where("userID", "==", `${post.userID}`),
+			where("image", "==", `${post.image}`)
+		)
+	}
+	const qSnap = await getDocs(q)
+	qSnap.forEach(async (data) => {
+		const postRef = doc(db, "user_posts", `${data.id}`)
+		await updateDoc(postRef, {
+			comments: arrayUnion({
+				profileIMG: profileIMG,
+				name: name,
+				userID: userID,
+				handle: handle,
+				time: new Date(),
+				comment: comment,
+			}),
+		})
+	})
+	return {
+		post: post,
+		profileIMG: profileIMG,
+		name: name,
+		userID: userID,
+		handle: handle,
+		comment: comment,
+	}
+}
+
 export const fetchFollowedAccounts = createAsyncThunk(
 	"fetchFollowedAccounts",
 	async (userID) => {
@@ -378,7 +460,6 @@ export const addNewMessage = createAsyncThunk(
 	async ({ userID, name, handle, handleLowercase, body, image }) => {
 		return await addDoc(collection(db, "user_posts"), {
 			userID: userID,
-			// name: name,
 			handle: handle,
 			handle_lowercase: handleLowercase,
 			time: new Date(),
@@ -386,6 +467,20 @@ export const addNewMessage = createAsyncThunk(
 			image: image,
 			likes: [`${userID}`],
 			comments: [],
+		})
+	}
+)
+
+export const addNewComment = createAsyncThunk(
+	"addNewComment",
+	async ({ post, profileIMG, name, userID, handle, comment }) => {
+		return await addComment({
+			post,
+			profileIMG,
+			name,
+			userID,
+			handle,
+			comment,
 		})
 	}
 )
